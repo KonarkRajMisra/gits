@@ -13,7 +13,7 @@ def load_reporter(reporter_id):
 
 @login_manager.user_loader
 def load_inspector(inspector_id):
-    return Inspector.query.get(reporter_id)
+    return Inspector.query.get(inspector_id)
 
 class Reporter(db.Model, UserMixin):
     
@@ -21,7 +21,7 @@ class Reporter(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key = True)
     email = db.Column(db.String(64), unique=True, index=True)
     pwd_hash = db.Column(db.String(128))
-    #relationship: Reporter -> report <-> Inspector
+    #relationship between reporter and report is one to one
     report = db.relationship('Report', backref='author', lazy=True)
     
     def __init__(self, email, password):
@@ -40,8 +40,9 @@ class Inspector(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64),unique=True, index=True)
     pwd_hash = db.Column(db.String(128))
-    #report <-> inspector
-    report = db.relationship('Report',backref='admin',lazy=True)
+    #report to inspector is many to many relationship
+    
+    report = db.relationship('Report',seondary='link')
     
     def __init__(self,email,password):
         self.email = email
@@ -55,17 +56,16 @@ class Inspector(db.Model, UserMixin):
     
 class Report(db.Model):
     
+    __tablename__ = 'report'
     #relationship to reporter, inspector
-    
     reporters = db.relationship(Reporter)
-    inspectors = db.relationship(Inspector)
     
     id = db.Column(db.Integer, primary_key=True)
     #connect report to the reporter's id
     reporter_id = db.Column(db.Integer, db.ForeignKey('reporters.id'), nullable=False)
     
     #TODO: connect all the reports to the inspector
-    
+    inspector = db.relationship(Inspector,secondary='link')
     supervisor_fname = db.Column(db.String(64), nullable=False)
     supervisor_lname = db.Column(db.String(64), nullable=False)
     crew_id = db.Column(db.Integer, nullable=False)
@@ -74,7 +74,7 @@ class Report(db.Model):
     type_of_building = db.Column(db.String(64),nullable=False)
     street_address = db.Column(db.String(256), nullable=False)
     zipcode = db.Column(db.Integer, nullable=False)
-    #TODO: gps_coordinates
+    gps_coordinates = db.Column(db.Integer, nullable=False)
     #TODO: image
     notes = db.Column(db.String(256),nullable=False)
     
@@ -91,8 +91,11 @@ class Report(db.Model):
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
     
-    
-    
-    
+#Link class to connect many-to-many relationship between reports and Inspectors
+
+class Link(db.Model):
+    __tablename__ = 'link'
+    report_id = db.Column(db.Integer,ForeignKey='report.id',primary_key=True)
+    inspector_id = db.Column(db.Integer,ForeignKey='inspector.id',primary_key=True)
         
 
