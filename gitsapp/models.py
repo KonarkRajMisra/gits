@@ -42,7 +42,7 @@ class Inspector(db.Model, UserMixin):
     pwd_hash = db.Column(db.String(128))
     #report to inspector is many to many relationship
     
-    report = db.relationship('Report',seondary='link')
+    report = db.relationship('Report',secondary='link')
     
     def __init__(self,email,password):
         self.email = email
@@ -69,7 +69,7 @@ class Report(db.Model):
     supervisor_fname = db.Column(db.String(64), nullable=False)
     supervisor_lname = db.Column(db.String(64), nullable=False)
     crew_id = db.Column(db.Integer, nullable=False)
-    date_of_incident = db.Column(db.Datetime,nullable=False,datetime=datetime.utcnow)
+    date_of_incident = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
     #TODO: scale_cleanup?
     type_of_building = db.Column(db.String(64),nullable=False)
     street_address = db.Column(db.String(256), nullable=False)
@@ -95,7 +95,7 @@ class Report(db.Model):
 
 class Link(db.Model):
     __tablename__ = 'link'
-    report_id = db.Column(db.Integer,ForeignKey='report.id',primary_key=True)
-    inspector_id = db.Column(db.Integer,ForeignKey='inspector.id',primary_key=True)
+    report_id = db.Column(db.Integer,db.ForeignKey('report.id'),primary_key=True)
+    inspector_id = db.Column(db.Integer,db.ForeignKey('inspector.id'),primary_key=True)
         
 
