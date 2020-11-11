@@ -4,7 +4,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from gitsapp import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from gitsapp.models import Reporter, Report
-from gitsapp.reporters.forms import RegistrationForm,LoginForm, ReportForm
+from gitsapp.reporters.forms import RegistrationForm,LoginForm, CCIEReportForm
 
 #reporter flow
 reporters_users = Blueprint('reporters_users',__name__)
@@ -47,7 +47,7 @@ def login_reporter():
 @login_required
 def reporter_account():
     
-    form = ReportForm()
+    form = CCIEReportForm()
     #if form submitted create a report
     print(form.validate_on_submit())
     if form.validate_on_submit():

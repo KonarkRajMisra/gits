@@ -28,7 +28,7 @@ class RegistrationForm(FlaskForm):
         
 #Form for Incident report
 
-class ReportForm(FlaskForm):
+class CCIEReportForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
     crew = IntegerField('Crew Id', validators=[Optional()])
