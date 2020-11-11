@@ -7,7 +7,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 
 #inspector flow
-inspectors_users = Blueprint('inspector_users', __name__)
+inspectors_users = Blueprint('inspectors_users', __name__)
 
 #create inspector acc
 @inspectors_users.route('/register_inspector',methods=['GET','POST'])
@@ -33,7 +33,7 @@ def login_inspector():
         
         inspector = Inspector.query.filter_by(email=form.email.data).first()
         
-        if inspector.check_password(form.password.data) and inspector:
+        if inspector.check_pwd(form.password.data) and inspector:
             login_user(inspector)
 
         return redirect(url_for('inspectors_users.dash'))

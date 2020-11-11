@@ -31,7 +31,7 @@ def login_reporter():
         
         reporter = Reporter.query.filter_by(email=form.email.data).first()
         
-        if reporter.check_password(form.password.data) and reporter:
+        if reporter.check_pwd(form.password.data) and reporter:
             login_user(reporter)
     return render_template('Reporters/login_reporter.html',form=form)
 
