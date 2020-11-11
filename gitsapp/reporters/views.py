@@ -12,7 +12,7 @@ reporters_users = Blueprint('reporters_users',__name__)
 #create reporter acc
 @reporters_users.route('/register_reporter',methods=['GET','POST'])
 def register_reporter():
-    form = RegistrationForm()
+    form = RegistrationForm(request.form)
     
     if form.validate_on_submit():
         reporter = Reporter(email=form.email.data,password=form.password.data)
@@ -20,26 +20,32 @@ def register_reporter():
         db.session.commit()
         
         return redirect(url_for('reporters_users.login_reporter'))
-    return render_template('register_reporter.html',form=form)
+    return render_template('Reporters/register_reporter.html',form=form)
 
 
 #login
 @reporters_users.route('/login_reporter',methods=['GET','POST'])
 def login_reporter():
-    form = LoginForm()
+    form = LoginForm(request.form)
     if form.validate_on_submit():
         
         reporter = Reporter.query.filter_by(email=form.email.data).first()
         
         if reporter.check_password(form.password.data) and reporter:
             login_user(reporter)
-    return render_template('login_reporter.html',form=form)
+    return render_template('Reporters/login_reporter.html',form=form)
 
 
-#after login users should be directed to create a incident report
-@reporters_users.route('/reporter_account',methods=['GET','POST'])
+#after login users should be directed to DASH
+@reporters_users.route('/reporter/dash', methods=['GET'])
 @login_required
-def reporter_account():
+def dash():
+    return render_template('Reporters/reporter_dash.html')
+
+
+@reporters_users.route('/reporter/ccie',methods=['GET','POST'])
+@login_required
+def ccie_report():
     form = ReportForm()
     
     #if form submitted create a report
@@ -51,7 +57,7 @@ def reporter_account():
         #redirect to reports page
         return redirect(url_for(reporters_users.reports))
     #otherwise show the form
-    return render_template('create_report.html',form=form)
+    return render_template('Reporters/CCIE_report.html',form=form)
 
 
 #query all the reports created by the user, else give 403 unauth access

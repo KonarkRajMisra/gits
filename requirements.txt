@@ -1,0 +1,11 @@
+Flask
+Flask-Login
+Flask-Migrate
+Flask-SQLAlchemy
+Flask-WTF
+Jinja2
+Mako
+SQLAlchemy
+Werkzeug
+WTForms
+email_validator
