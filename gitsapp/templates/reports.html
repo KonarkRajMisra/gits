@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class='jumbotron'>
+    <ul>
+        <li>Report Number: {{report.id}}</li>
+        <li>Supervisor First Name: {{report.supervisor_fname}}</li>
+        <li>Supervisor Last Name: {{report.supervisor_lname}}</li>
+        <li>Crew ID: {{report.crew_id}}</li>
+        <li>Date of Incident: {{report.date_of_incident}} </li>
+        <li>Type Of Building: {{report.type_of_building}} </li>
+        <li> Street Address: {{report.street_address}}</li>
+        <li> Zipcode: {{report.zipcode}}</li>
+        <li> Notes: {{report.notes}}</li>
+    </ul>
+
+</div>
+
+{% endblock %}
