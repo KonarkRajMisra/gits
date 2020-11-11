@@ -1,6 +1,9 @@
+from typing import Optional
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField,SubmitField
-from wtforms.validators import DataRequired,Email,EqualTo
+from wtforms import StringField,PasswordField,SubmitField,DateField
+from wtforms.fields.core import IntegerField
+from wtforms.fields.simple import TextAreaField
+from wtforms.validators import DataRequired,Email,EqualTo,Optional
 from wtforms import ValidationError
 
 from flask_login import current_user
@@ -26,5 +29,17 @@ class RegistrationForm(FlaskForm):
 #Form for Incident report
 
 class ReportForm(FlaskForm):
-    pass
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    crew = IntegerField('Crew Id', validators=None)
+    #needs to be empty for now
+    date = DateField('Date of Incident',validators=[Optional()])
+    building_type = StringField('Type of Building', validators=None)
+    street_address = StringField('Address',validators=None)
+    zipcode = IntegerField('Zipcode',validators=[DataRequired()])
+    notes = TextAreaField('Notes',validators=None)
+    submit = SubmitField('Create Report')
+    
+    
+    
         

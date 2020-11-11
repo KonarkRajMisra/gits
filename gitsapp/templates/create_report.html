@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="container">
+    <form method="POST">
+
+        {{ form.hidden_tag() }}
+        {{form.first_name.label}} {{form.first_name()}}
+        <br>
+        {{form.last_name.label}} {{form.last_name()}}
+        <br>
+        {{form.crew.label}} {{form.crew()}}
+        <br>
+        {{form.date.label}} {{form.date()}}
+        <br>
+        {{form.building_type.label}} {{form.building_type()}}
+        <br>
+        {{form.street_address.label}} {{form.street_address()}}
+        <br>
+        {{form.zipcode.label}} {{form.zipcode()}}
+        <br>
+        {{form.notes.label}} {{form.notes()}}
+        <br>
+        {{form.submit()}}
+    </form>
+
+</div>
+
+{% endblock %}
