@@ -31,7 +31,7 @@ class RegistrationForm(FlaskForm):
 class ReportForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
-    crew = IntegerField('Crew Id', validators=None)
+    crew = IntegerField('Crew Id', validators=[Optional()])
     #needs to be empty for now
     date = DateField('Date of Incident',validators=[Optional()])
     building_type = StringField('Type of Building', validators=None)

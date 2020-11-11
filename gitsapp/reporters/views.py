@@ -62,7 +62,9 @@ def reporter_account():
                         notes=form.notes.data,author_id=current_user.id)
         db.session.add(report)
         db.session.commit()
-        return redirect(url_for('reporters_users.reports'))
+    # elif not form.validate_on_submit():
+    #     print(form.errors)
+        return redirect(url_for('reporters_users.reports',report_id=report.id))
     
     #otherwise show the form
     return render_template('create_report.html',form=form)
