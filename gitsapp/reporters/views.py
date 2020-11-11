@@ -71,7 +71,8 @@ def reporter_account():
 
 
 
-#query all the reports created by the user, else give 403 unauth access
+#query all the reports created by the user, else give 403 unauth access\
+#TODO: reports() for pagination
 @reporters_users.route('/<int:report_id>',methods=['GET','POST'])
 @login_required
 def reports(report_id):
