@@ -23,10 +23,12 @@ class Reporter(db.Model, UserMixin):
     pwd_hash = db.Column(db.String(128))
     #relationship between reporter and report is one to one
     report = db.relationship('Report', backref='author', lazy=True)
+    urole = db.Column(db.String(80))
     
-    def __init__(self, email, password):
+    def __init__(self, email, password, urole):
         self.email = email
         self.pwd_hash = generate_password_hash(password)
+        self.urole = urole
         
     def check_pwd(self,password):
         return check_password_hash(self.pwhash, password)
@@ -40,13 +42,15 @@ class Inspector(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64),unique=True, index=True)
     pwd_hash = db.Column(db.String(128))
+    urole = db.Column(db.String(80))
     #report to inspector is many to many relationship
     
-    report = db.relationship('Report',secondary='link')
+    #report = db.relationship('Report',secondary='link')
     
-    def __init__(self,email,password):
+    def __init__(self,email,password, urole):
         self.email = email
         self.pwd_hash = generate_password_hash(password)
+        self.urole = urole
         
     def check_pwd(self,password):
         return check_password_hash(self.pwd_hash,password)
@@ -65,7 +69,7 @@ class Report(db.Model):
     reporter_id = db.Column(db.Integer, db.ForeignKey('reporters.id'), nullable=False)
     
     #TODO: connect all the reports to the inspector
-    inspector = db.relationship(Inspector,secondary='link')
+    #inspector = db.relationship(Inspector,secondary='link')
     supervisor_fname = db.Column(db.String(64), nullable=False)
     supervisor_lname = db.Column(db.String(64), nullable=False)
     crew_id = db.Column(db.Integer, nullable=False)
@@ -93,9 +97,9 @@ class Report(db.Model):
     
 #Link class to connect many-to-many relationship between reports and Inspectors
 
-class Link(db.Model):
-    __tablename__ = 'link'
-    report_id = db.Column(db.Integer,db.ForeignKey('report.id'),primary_key=True)
-    inspector_id = db.Column(db.Integer,db.ForeignKey('inspector.id'),primary_key=True)
+# class Link(db.Model):
+#     __tablename__ = 'link'
+#     report_id = db.Column(db.Integer,db.ForeignKey('report.id'),primary_key=True)
+#     inspector_id = db.Column(db.Integer,db.ForeignKey('inspector.id'),primary_key=True)
         
 
