@@ -31,8 +31,14 @@ def login_reporter():
         
         reporter = Reporter.query.filter_by(email=form.email.data).first()
         
-        if reporter.check_password(form.password.data) and reporter:
+        if reporter.check_pwd(form.password.data) and reporter is not None:
             login_user(reporter)
+            next = request.args.get('next')
+            flash('logged in')
+            if next:
+                return redirect(next)
+            
+            return redirect(url_for('reporters_users.reporter_account'))
     return render_template('login_reporter.html',form=form)
 
 
@@ -40,26 +46,34 @@ def login_reporter():
 @reporters_users.route('/reporter_account',methods=['GET','POST'])
 @login_required
 def reporter_account():
-    form = ReportForm()
     
+    form = ReportForm()
     #if form submitted create a report
+    print(form.validate_on_submit())
     if form.validate_on_submit():
-        report = Report(form.first_name.data,form.last_name.data,form.crew.data,form.date.data,form.building_type.data,form.street_address.data,form.zipcode.data,form.notes.data)
+        print("validated")
+        report = Report(supervisor_fname=form.first_name.data,
+                        supervisor_lname=form.last_name.data,
+                        crew_id=form.crew.data,
+                        date_of_incident=form.date.data,
+                        type_of_building=form.building_type.data,
+                        street_address=form.street_address.data,
+                        zipcode=form.zipcode.data,
+                        notes=form.notes.data,author_id=current_user.id)
         db.session.add(report)
         db.session.commit()
-        
-        #redirect to reports page
-        return redirect(url_for(reporters_users.reports))
+        return redirect(url_for('reporters_users.reports'))
+    
     #otherwise show the form
     return render_template('create_report.html',form=form)
 
 
+
 #query all the reports created by the user, else give 403 unauth access
-@reporters_users.route('/reports',methods=['GET','POST'])
+@reporters_users.route('/<int:report_id>',methods=['GET','POST'])
 @login_required
 def reports(report_id):
-    all_reports = Report.query.get_or_404(report_id)
-    if all_reports.author != current_user:
-        abort(403)
+    report = Report.query.get_or_404(report_id)
+    return render_template('reports.html',report=report)
             
         
