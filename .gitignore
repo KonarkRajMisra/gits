@@ -1,0 +1,3 @@
+*.pyc
+gitsapp/data.sqlite
+__pycache__/
