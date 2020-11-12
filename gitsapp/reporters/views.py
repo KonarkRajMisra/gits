@@ -4,7 +4,7 @@ from flask_login import login_user, current_user, logout_user
 from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from gitsapp.models import Reporter, Report
-from gitsapp.reporters.forms import RegistrationForm,LoginForm, ReportForm
+from gitsapp.reporters.forms import RegistrationForm,LoginForm, CCIEReportForm
 
 #reporter flow
 reporters_users = Blueprint('reporters_users',__name__)
@@ -54,14 +54,25 @@ def dash():
 def ccie_report():
     form = ReportForm()
     
+    form = CCIEReportForm()
     #if form submitted create a report
+    print(form.validate_on_submit())
     if form.validate_on_submit():
-        report = Report(form.first_name.data,form.last_name.data,form.crew.data,form.date.data,form.building_type.data,form.street_address.data,form.zipcode.data,form.notes.data)
+        print("validated")
+        report = Report(supervisor_fname=form.first_name.data,
+                        supervisor_lname=form.last_name.data,
+                        crew_id=form.crew.data,
+                        date_of_incident=form.date.data,
+                        type_of_building=form.building_type.data,
+                        street_address=form.street_address.data,
+                        zipcode=form.zipcode.data,
+                        notes=form.notes.data,author_id=current_user.id)
         db.session.add(report)
         db.session.commit()
-        
-        #redirect to reports page
-        return redirect(url_for(reporters_users.reports))
+    # elif not form.validate_on_submit():
+    #     print(form.errors)
+        return redirect(url_for('reporters_users.reports',report_id=report.id))
+    
     #otherwise show the form
     return render_template('Reporters/CCIE_report.html',form=form)
 
@@ -70,8 +81,7 @@ def ccie_report():
 @reporters_users.route('/reporter/reports',methods=['GET','POST'])
 @login_required(role="WORKER")
 def reports(report_id):
-    all_reports = Report.query.get_or_404(report_id)
-    if all_reports.author != current_user:
-        abort(403)
+    report = Report.query.get_or_404(report_id)
+    return render_template('reports.html',report=report)
             
         

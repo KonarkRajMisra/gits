@@ -1,24 +1,17 @@
-<!-- TODO: This page needs to be redone!-->
-
 {% extends "base.html" %}
 {% block content %}
 
 <div class="container">
     <div class="jumbotron">
-
         <form method="POST">
-
-            
             {{form.hidden_tag()}}
             {{form.email.label}} {{form.email()}} <br>
-            {{form.password.label}} {{form.password()}} <br> 
-            {{form.pass_confirm.label}} {{form.pass_confirm()}} <br>
+            {{form.password.label}} {{form.password()}} <br>
             {{form.submit()}}
 
-
         </form>
-
     </div>
+
 </div>
 
 {% endblock %}
