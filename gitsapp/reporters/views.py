@@ -50,9 +50,8 @@ def dash():
 
 
 @reporters_users.route('/reporter/ccie',methods=['GET','POST'])
-@login_required(role="WORKER")
+#@login_required(role="WORKER")
 def ccie_report():
-    form = ReportForm()
     
     form = CCIEReportForm()
     #if form submitted create a report
