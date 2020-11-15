@@ -4,16 +4,24 @@
 <div class="container">
     <div class="jumbotron">
 
+        <h1>City Workers</h1>
         <button type="button" class="btn btn-success"> 
-            <a href="{{url_for('reporters_users.register_reporter')}}">
-                Sign Up 
-            </a>
+            <a href="{{url_for('reporters_users.register_reporter')}}">Sign Up </a>
             
         </button>
         <button type="button" class="btn btn-primary">
-            <a href="{{url_for('reporters_users.login_reporter')}}">
-                Log In 
-            </a>
+            <a href="{{url_for('reporters_users.login_reporter')}}">Log In </a>
+            
+        </button>
+
+
+        <h1>Law Enforcement</h1>
+        <button type="button" class="btn btn-success"> 
+            <a href="{{url_for('inspectors_users.register_inspector')}}">Sign Up </a>
+            
+        </button>
+        <button type="button" class="btn btn-primary">
+            <a href="{{url_for('inspectors_users.login_inspector')}}">Log In </a>
             
         </button>
 

@@ -11,9 +11,9 @@ from datetime import date, datetime
 def load_reporter(reporter_id):
     return Reporter.query.get(reporter_id)
 
-# @login_manager.user_loader
-# def load_inspector(inspector_id):
-#     return Inspector.query.get(inspector_id)
+@login_manager.user_loader
+def load_inspector(inspector_id):
+    return Inspector.query.get(inspector_id)
 
 
 
@@ -35,12 +35,14 @@ class Reporter(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True, index=True)
     pwd_hash = db.Column(db.String(128))
-
-    reports = db.relationship('Report', backref='author',lazy=True)
+    #relationship between reporter and report is one to one
+    #reports = db.relationship('Report', backref='author',lazy=True)
+    urole = db.Column(db.String(80))
     
-    def __init__(self, email, password):
+    def __init__(self, email, password, urole):
         self.email = email
         self.pwd_hash = generate_password_hash(password)
+        self.urole = urole
         
     def check_pwd(self,password):
         return check_password_hash(self.pwd_hash, password)
@@ -54,15 +56,15 @@ class Inspector(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64),unique=True, index=True)
     pwd_hash = db.Column(db.String(128))
-    
-    
+    urole = db.Column(db.String(80))
     #report to inspector is many to many relationship
     #as all inspectors can access all reports
     #report = db.relationship('Report',secondary=link)
     
-    def __init__(self,email,password):
+    def __init__(self,email,password, urole):
         self.email = email
         self.pwd_hash = generate_password_hash(password)
+        self.urole = urole
         
     def check_pwd(self,password):
         return check_password_hash(self.pwd_hash,password)
@@ -77,6 +79,10 @@ class Report(db.Model):
 
     
     id = db.Column(db.Integer, primary_key=True)
+    #connect report to the reporter's id
+    reporter_id = db.Column(db.Integer, db.ForeignKey('reporters.id'), nullable=False)
+    
+    #TODO: connect all the reports to the inspector
     supervisor_fname = db.Column(db.String(64), nullable=False)
     supervisor_lname = db.Column(db.String(64), nullable=False)
     crew_id = db.Column(db.Integer, nullable=True)
@@ -92,7 +98,7 @@ class Report(db.Model):
      #relationship to inspector
     #connect report to the reporter's id
     #one to many
-    reporters = db.relationship(Reporter)
+    #reporters = db.relationship(Reporter)
     author_id = db.Column(db.Integer, db.ForeignKey('reporters.id'),nullable=False)
     #inspectors = db.relationship('Inspector',secondary=link,lazy='subquery',backref=db.backref('inspectors',lazy=True))
     
@@ -110,7 +116,6 @@ class Report(db.Model):
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
     
-
 
         
 
