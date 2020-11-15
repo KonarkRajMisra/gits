@@ -80,17 +80,22 @@ class Report(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     #connect report to the reporter's id
-    reporter_id = db.Column(db.Integer, db.ForeignKey('reporters.id'), nullable=False)
+    #reporter_id = db.Column(db.Integer, db.ForeignKey('reporters.id'), nullable=False)
     
     #TODO: connect all the reports to the inspector
+    first_name=db.Column(db.String(64), nullable=False)
+    last_name=db.Column(db.String(64), nullable=False)
     supervisor_fname = db.Column(db.String(64), nullable=False)
     supervisor_lname = db.Column(db.String(64), nullable=False)
-    crew_id = db.Column(db.Integer, nullable=True)
+    crew_id = db.Column(db.Integer, nullable=False)
     date_of_incident = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
-    #TODO: scale_cleanup?
-    type_of_building = db.Column(db.String(64),nullable=True)
-    street_address = db.Column(db.String(256), nullable=True)
+    scale_of_cleanup = db.Column(db.String(64), nullable=False)
+    type_of_building = db.Column(db.String(64),nullable=False)
+    street_address = db.Column(db.String(256), nullable=False)
     zipcode = db.Column(db.Integer, nullable=False)
+    state = db.Column(db.String(256), nullable=False)
+    cross_street = db.Column(db.String(256), nullable=True)
+
     #gps_coordinates = db.Column(db.Integer, nullable=False)
     #TODO: image
     notes = db.Column(db.String(256),nullable=True)
@@ -99,19 +104,23 @@ class Report(db.Model):
     #connect report to the reporter's id
     #one to many
     #reporters = db.relationship(Reporter)
-    author_id = db.Column(db.Integer, db.ForeignKey('reporters.id'),nullable=False)
+    #author_id = db.Column(db.Integer, db.ForeignKey('reporters.id'),nullable=False)
     #inspectors = db.relationship('Inspector',secondary=link,lazy='subquery',backref=db.backref('inspectors',lazy=True))
     
-    def __init__(self, supervisor_fname, supervisor_lname, crew_id, date_of_incident, type_of_building, street_address, zipcode, notes,author_id) -> None:
+    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state, cross_street=None, notes=None):
+        self.first_name = first_name
+        self.last_name = last_name
         self.supervisor_fname = supervisor_fname
         self.supervisor_lname = supervisor_lname
         self.crew_id = crew_id
+        self.scale_of_cleanup = scale_of_cleanup
         self.date_of_incident = date_of_incident
         self.type_of_building = type_of_building
         self.street_address = street_address
         self.zipcode = zipcode
+        self.state = state
+        self.cross_street = cross_street
         self.notes = notes
-        self.author_id = author_id
     
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
