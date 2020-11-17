@@ -40,7 +40,7 @@ def login_reporter():
         
         if reporter and reporter.check_pwd(form.password.data):
             login_user(reporter)
-            return redirect(url_for('core.index'))
+            return redirect(url_for('reporters_users.dash'))
 
     return render_template('Reporters/login_reporter.html',form=form)
 
