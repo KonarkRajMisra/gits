@@ -3,7 +3,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user
 from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
-from gitsapp.models import Reporter, Report
+from gitsapp.models import User, Report
 from gitsapp.reporters.forms import RegistrationForm,LoginForm, CCIEReportForm
 
 #reporter flow
@@ -13,8 +13,9 @@ reporters_users = Blueprint('reporters_users',__name__)
 @reporters_users.route('/register_reporter',methods=['GET','POST'])
 def register_reporter():
     form = RegistrationForm(request.form)
+
     if form.validate_on_submit():
-        reporter = Reporter(email=form.email.data,password=form.password.data, urole="WORKER")
+        reporter = User(email=form.email.data,password=form.password.data, urole="WORKER")
         db.session.add(reporter)
         db.session.commit()
         
@@ -35,10 +36,12 @@ def login_reporter():
     form = LoginForm(request.form)
     if form.validate_on_submit():
         
-        reporter = Reporter.query.filter_by(email=form.email.data).first()
+        reporter = User.query.filter_by(email=form.email.data).first()
         
-        if reporter.check_pwd(form.password.data) and reporter:
+        if reporter and reporter.check_pwd(form.password.data):
             login_user(reporter)
+            return redirect(url_for('core.index'))
+
     return render_template('Reporters/login_reporter.html',form=form)
 
 
@@ -46,18 +49,16 @@ def login_reporter():
 @reporters_users.route('/reporter/dash', methods=['GET'])
 @login_required(role="WORKER")
 def dash():
-    return render_template('Reporters/reporter_dash.html')
+    return render_template('Reporters/reporter_dash.html', curr_user = current_user)
 
 
 @reporters_users.route('/reporter/ccie',methods=['GET','POST'])
-#@login_required(role="WORKER")
+@login_required(role="WORKER")
 def ccie_report():
     
     form = CCIEReportForm()
     #if form submitted create a report
-    print(form.validate_on_submit())
     if form.validate_on_submit():
-        print("validated")
         report = Report(supervisor_fname=form.first_name.data,
                         supervisor_lname=form.last_name.data,
                         crew_id=form.crew.data,
@@ -83,4 +84,9 @@ def reports(report_id):
     report = Report.query.get_or_404(report_id)
     return render_template('reports.html',report=report)
             
-        
+
+@reporters_users.route('/reporter/sign_out')
+@login_required(role="WORKER")
+def signout_reporter():
+    logout_user()
+    return redirect(url_for('core.index'))
