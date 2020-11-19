@@ -47,7 +47,7 @@ def login_reporter():
 
 #after login users should be directed to DASH
 @reporters_users.route('/reporter/dash', methods=['GET'])
-@login_required(role="WORKER")
+#@login_required(role="WORKER")
 def dash():
     return render_template('Reporters/reporter_dash.html', curr_user = current_user)
 
@@ -56,23 +56,33 @@ def dash():
 @login_required(role="WORKER")
 def ccie_report():
     
-    form = CCIEReportForm()
+    form = CCIEReportForm(request.form)
+    print(form.first_name)
     #if form submitted create a report
     if form.validate_on_submit():
-        report = Report(supervisor_fname=form.first_name.data,
-                        supervisor_lname=form.last_name.data,
+        print("validated")
+        report = Report(
+                        first_name = form.first_name.data,
+                        last_name = form.last_name.data,
+                        supervisor_fname=form.sup_fname.data,
+                        supervisor_lname=form.sup_lname.data,
                         crew_id=form.crew.data,
                         date_of_incident=form.date.data,
+                        scale_of_cleanup=form.cleanup.data,
                         type_of_building=form.building_type.data,
                         street_address=form.street_address.data,
                         zipcode=form.zipcode.data,
-                        notes=form.notes.data,author_id=current_user.id)
+                        state = form.state.data,
+                        cross_street = form.cross_street.data, 
+                        notes=form.notes.data
+                        #author_id=current_user.id),
+        )
         db.session.add(report)
         db.session.commit()
-    # elif not form.validate_on_submit():
-    #     print(form.errors)
-        return redirect(url_for('reporters_users.reports',report_id=report.id))
+        return redirect(url_for('reporters_users.dash'))
+
     
+    print(form.errors)
     #otherwise show the form
     return render_template('Reporters/CCIE_report.html',form=form)
 
