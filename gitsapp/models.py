@@ -96,7 +96,8 @@ class Report(db.Model):
     state = db.Column(db.String(256), nullable=False)
     cross_street = db.Column(db.String(256), nullable=True)
 
-    #gps_coordinates = db.Column(db.Integer, nullable=False)
+    gps_lat = db.Column(db.Float(2), nullable=False)
+    gps_lng = db.Column(db.Float(2), nullable=False)
     #TODO: image
     notes = db.Column(db.String(256),nullable=True)
     
@@ -107,7 +108,7 @@ class Report(db.Model):
     #author_id = db.Column(db.Integer, db.ForeignKey('reporters.id'),nullable=False)
     #inspectors = db.relationship('Inspector',secondary=link,lazy='subquery',backref=db.backref('inspectors',lazy=True))
     
-    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state, cross_street=None, notes=None):
+    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state,  gps_lat, gps_lng, notes=None, cross_street=None):
         self.first_name = first_name
         self.last_name = last_name
         self.supervisor_fname = supervisor_fname
@@ -120,6 +121,8 @@ class Report(db.Model):
         self.zipcode = zipcode
         self.state = state
         self.cross_street = cross_street
+        self.gps_lat = gps_lat
+        self.gps_lng = gps_lng
         self.notes = notes
     
     def __repr__(self) -> str:
