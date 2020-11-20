@@ -3,7 +3,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user
 from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
-from gitsapp.models import Reporter, Report
+from gitsapp.models import User, Report
 from gitsapp.reporters.forms import RegistrationForm,LoginForm, CCIEReportForm
 
 #reporter flow
@@ -14,7 +14,7 @@ reporters_users = Blueprint('reporters_users',__name__)
 def register_reporter():
     form = RegistrationForm(request.form)
     if form.validate_on_submit():
-        reporter = Reporter(email=form.email.data,password=form.password.data, urole="WORKER")
+        reporter = User(email=form.email.data,password=form.password.data, urole="WORKER")
         db.session.add(reporter)
         db.session.commit()
         
@@ -35,7 +35,7 @@ def login_reporter():
     form = LoginForm(request.form)
     if form.validate_on_submit():
         
-        reporter = Reporter.query.filter_by(email=form.email.data).first()
+        reporter = User.query.filter_by(email=form.email.data).first()
         
         if reporter.check_pwd(form.password.data) and reporter:
             login_user(reporter)
@@ -50,7 +50,7 @@ def dash():
 
 
 @reporters_users.route('/reporter/ccie',methods=['GET','POST'])
-#@login_required(role="WORKER")
+@login_required(role="WORKER")
 def ccie_report():
     
     form = CCIEReportForm(request.form)
@@ -84,6 +84,11 @@ def ccie_report():
     #otherwise show the form
     return render_template('Reporters/CCIE_report.html',form=form)
 
+@reporters_users.route('/reporter/sign_out')
+@login_required(role="WORKER")
+def signout_reporter():
+    logout_user()
+    return redirect(url_for('core.index'))
 
 #query all the reports created by the user, else give 403 unauth access
 @reporters_users.route('/reporter/reports',methods=['GET','POST'])

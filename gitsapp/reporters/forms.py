@@ -6,7 +6,7 @@ from wtforms.fields.simple import TextAreaField
 from wtforms.validators import DataRequired,Email,EqualTo,Optional, Length
 from wtforms import ValidationError
 from flask_login import current_user
-from gitsapp.models import Reporter
+from gitsapp.models import User
 
 
 building_choices = [
@@ -90,7 +90,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Register')
     
     def validate_email(self,field):
-        if Reporter.query.filter_by(email=field.data).first():
+        if User.query.filter_by(email=field.data).first():
             raise ValidationError('User already exists. Please Log In.')
         
 #Form for Incident report

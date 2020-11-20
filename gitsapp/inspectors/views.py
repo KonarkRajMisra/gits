@@ -1,5 +1,5 @@
 from os import abort
-from gitsapp.models import Inspector
+from gitsapp.models import User
 from gitsapp.inspectors.forms import RegistrationForm,LoginForm
 from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -15,7 +15,7 @@ def register_inspector():
     form = RegistrationForm(request.form)
     
     if form.validate_on_submit():
-        inspector = Inspector(email=form.email.data,password=form.password.data, urole="LAW")
+        inspector = User(email=form.email.data,password=form.password.data, urole="LAW")
         db.session.add(inspector)
         db.session.commit()
        
@@ -33,13 +33,10 @@ def login_inspector():
             return redirect(url_for('inspectors_users.dash'))
         
 
-        return redirect (url_for('reporters_users.dash'))
-        
-
     form = LoginForm(request.form)
     if form.validate_on_submit():
         
-        inspector = Inspector.query.filter_by(email=form.email.data).first()
+        inspector = User.query.filter_by(email=form.email.data).first()
         
         if inspector.check_pwd(form.password.data) and inspector:
             login_user(inspector)
@@ -74,4 +71,3 @@ def reports(report_id):
     if all_reports.author != current_user:
         abort(403)
             
-        

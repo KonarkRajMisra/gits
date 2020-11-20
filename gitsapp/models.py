@@ -8,30 +8,14 @@ from datetime import date, datetime
 
 #load users for: Reporter and Inspector
 @login_manager.user_loader
-def load_reporter(reporter_id):
-    return Reporter.query.get(reporter_id)
-
-@login_manager.user_loader
-def load_inspector(inspector_id):
-    return Inspector.query.get(inspector_id)
+def load_reporter(user_id):
+    return User.query.get(user_id)
 
 
 
-#association table for inspectors to reports
-#link = db.Table('link',db.Column('inspector_id',db.Integer, db.ForeignKey('inspectors.id')),db.Column('report_id',db.Integer,db.ForeignKey('report.id')))
-
-
-"""
-Reporter -> Report -> Inspector
-
-One Reporter can create multiple reports, one to many
-One Inspector can access all available reports, many to many
-
-"""
-
-class Reporter(db.Model, UserMixin):
+class User(db.Model, UserMixin):
     
-    __tablename__ = 'reporters'
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True, index=True)
     pwd_hash = db.Column(db.String(128))
@@ -48,30 +32,9 @@ class Reporter(db.Model, UserMixin):
         return check_password_hash(self.pwd_hash, password)
     
     def __repr__(self):
-        return f"Reporter's Email: {self.email}"
+        return f"User's Email: {self.email}"
     
-class Inspector(db.Model, UserMixin):
-    
-    __tablename__ = 'inspectors'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64),unique=True, index=True)
-    pwd_hash = db.Column(db.String(128))
-    urole = db.Column(db.String(80))
-    #report to inspector is many to many relationship
-    #as all inspectors can access all reports
-    #report = db.relationship('Report',secondary=link)
-    
-    def __init__(self,email,password, urole):
-        self.email = email
-        self.pwd_hash = generate_password_hash(password)
-        self.urole = urole
-        
-    def check_pwd(self,password):
-        return check_password_hash(self.pwd_hash,password)
-    
-    def __repr__(self):
-        return f"Inspector's email: {self.email}"
-    
+
 class Report(db.Model):
     
     __tablename__ = 'report'
@@ -96,17 +59,11 @@ class Report(db.Model):
     state = db.Column(db.String(256), nullable=False)
     cross_street = db.Column(db.String(256), nullable=True)
 
-    #gps_coordinates = db.Column(db.Integer, nullable=False)
+
     #TODO: image
     notes = db.Column(db.String(256),nullable=True)
     
-     #relationship to inspector
-    #connect report to the reporter's id
-    #one to many
-    #reporters = db.relationship(Reporter)
-    #author_id = db.Column(db.Integer, db.ForeignKey('reporters.id'),nullable=False)
-    #inspectors = db.relationship('Inspector',secondary=link,lazy='subquery',backref=db.backref('inspectors',lazy=True))
-    
+   
     def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state, cross_street=None, notes=None):
         self.first_name = first_name
         self.last_name = last_name
@@ -125,6 +82,3 @@ class Report(db.Model):
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
     
-
-        
-
