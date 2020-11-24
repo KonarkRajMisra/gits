@@ -1,17 +1,59 @@
 <!DOCTYPE html>
 <html>
 
+<head>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7IJ8NOPPuyGymr2fStLpV-TJfda1JRsY&callback=initMap&libraries=&v=weekly"
+        defer></script>
 
-    <body>
-        <h1>Welcome {{curr_user.email}}</h1>
-        <button>
-            <a href="{{url_for('inspectors_users.signout_inspector')}}"> 
-                Sign out
+    <style type="text/css">
+        /* Set the size of the div element that contains the map */
+        #map {
+            height: 400px;
+            /* The height is 400 pixels */
+            width: 100%;
+            /* The width is the width of the web page */
+        }
+    </style>
 
-            </a>
+    <script>
+        var map = null;
+        // Initialize and add the map
+        function initMap() {
+            const unStates = { lat:39.8283, lng:-98.5795 };
+            map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 4,
+            center: unStates,
+            });           
+        }
 
-        </button>
-        
-    </body>
+        function addMarkers(pins) {
+            pins.forEach(coords => {
+                const marker = new google.maps.Marker({
+                    position:coords,
+                    map:map
+                })
+
+
+            })
+
+        }
+
+    </script>
+</head>
+
+<body>
+    <h1>Welcome {{curr_user.email}}</h1>
+    <button>
+        <a href="{{url_for('inspectors_users.signout_inspector')}}">
+            Sign out
+
+        </a>
+
+    </button>
+
+    {{googlemap("reports_map", lat=39.8283, lng=-98.5795, markers=pins, zoom=2)}}
+
+
+</body>
 
 </html>

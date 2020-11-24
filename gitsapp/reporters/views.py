@@ -5,6 +5,7 @@ from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from gitsapp.models import User, Report
 from gitsapp.reporters.forms import RegistrationForm,LoginForm, CCIEReportForm
+from gitsapp import gmap
 
 #reporter flow
 reporters_users = Blueprint('reporters_users',__name__)
@@ -55,12 +56,18 @@ def dash():
 @reporters_users.route('/reporter/ccie',methods=['GET','POST'])
 @login_required(role="WORKER")
 def ccie_report():
-    
     form = CCIEReportForm(request.form)
-    print(form.first_name)
     #if form submitted create a report
     if form.validate_on_submit():
-        print("validated")
+
+        result = gmap.geocode(form.street_address.data)
+
+        #basic check to make sure address matches state
+        if(result[0].get("address_components")[5].get("long_name") != form.state.data):
+            form.errors.append('Invalid state')
+            return render_tempalte('Reporters/CCIE_report.html', form=form)
+
+        
         report = Report(
                         first_name = form.first_name.data,
                         last_name = form.last_name.data,
@@ -73,6 +80,8 @@ def ccie_report():
                         street_address=form.street_address.data,
                         zipcode=form.zipcode.data,
                         state = form.state.data,
+                        gps_lat = result[0].get("geometry").get("location").get("lat"),
+                        gps_lng = result[0].get("geometry").get("location").get("lng"),
                         cross_street = form.cross_street.data, 
                         notes=form.notes.data
                         #author_id=current_user.id),
