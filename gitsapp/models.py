@@ -7,13 +7,14 @@ from flask_login import UserMixin
 from datetime import date, datetime
 
 #load users for: Reporter and Inspector
-@login_manager.user_loader
-def load_reporter(reporter_id):
-    return Reporter.query.get(reporter_id)
+# @login_manager.user_loader
+# def load_reporter(reporter_id):
+    
+    # return Reporter.query.get(reporter_id)
 
 @login_manager.user_loader
-def load_inspector(inspector_id):
-    return Inspector.query.get(inspector_id)
+def load_user(user_id):
+    return User.query.get(user_id)
 
 
 
@@ -29,16 +30,13 @@ One Inspector can access all available reports, many to many
 
 """
 
-class Reporter(db.Model, UserMixin):
-    
-    __tablename__ = 'reporters'
+class User(db.Model, UserMixin):
+    __tablename__= 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True, index=True)
     pwd_hash = db.Column(db.String(128))
-    #relationship between reporter and report is one to one
-    #reports = db.relationship('Report', backref='author',lazy=True)
     urole = db.Column(db.String(80))
-    
+
     def __init__(self, email, password, urole):
         self.email = email
         self.pwd_hash = generate_password_hash(password)
@@ -48,29 +46,39 @@ class Reporter(db.Model, UserMixin):
         return check_password_hash(self.pwd_hash, password)
     
     def __repr__(self):
-        return f"Reporter's Email: {self.email}"
+        return f"User's Email: {self.email}"
+
+# class Reporter(db.Model, UserMixin):
     
-class Inspector(db.Model, UserMixin):
+#     __tablename__ = 'reporters'
+
+    #relationship between reporter and report is one to one
+    #reports = db.relationship('Report', backref='author',lazy=True)
+   
     
-    __tablename__ = 'inspectors'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64),unique=True, index=True)
-    pwd_hash = db.Column(db.String(128))
-    urole = db.Column(db.String(80))
+  
+    
+# class Inspector(db.Model, UserMixin):
+    
+#     __tablename__ = 'inspectors'
+#     id = db.Column(db.Integer, primary_key=True)
+#     email = db.Column(db.String(64),unique=True, index=True)
+#     pwd_hash = db.Column(db.String(128))
+#     urole = db.Column(db.String(80))
     #report to inspector is many to many relationship
     #as all inspectors can access all reports
     #report = db.relationship('Report',secondary=link)
     
-    def __init__(self,email,password, urole):
-        self.email = email
-        self.pwd_hash = generate_password_hash(password)
-        self.urole = urole
+    # def __init__(self,email,password, urole):
+    #     self.email = email
+    #     self.pwd_hash = generate_password_hash(password)
+    #     self.urole = urole
         
-    def check_pwd(self,password):
-        return check_password_hash(self.pwd_hash,password)
+    # def check_pwd(self,password):
+    #     return check_password_hash(self.pwd_hash,password)
     
-    def __repr__(self):
-        return f"Inspector's email: {self.email}"
+    # def __repr__(self):
+    #     return f"Inspector's email: {self.email}"
     
 class Report(db.Model):
     
