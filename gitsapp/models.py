@@ -9,10 +9,6 @@ from datetime import date, datetime
 
 
 
-class User(db.Model, UserMixin):
-    
-    __tablename__ = 'users'
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -64,13 +60,11 @@ class Report(db.Model):
     cross_street = db.Column(db.String(256), nullable=True)
 
     #TODO: image
-    notes = db.Column(db.String(256),nullable=True)
-
-    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state, cross_street=None, notes=None):
     gps_lat = db.Column(db.Float(2), nullable=False)
     gps_lng = db.Column(db.Float(2), nullable=False)
-    #TODO: image
     notes = db.Column(db.String(256),nullable=True)
+
+        
 
     def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state,  gps_lat, gps_lng, notes=None, cross_street=None):
         self.first_name = first_name

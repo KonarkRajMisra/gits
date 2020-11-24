@@ -108,9 +108,3 @@ def reports(report_id):
     report = Report.query.get_or_404(report_id)
     return render_template('reports.html',report=report)
             
-
-@reporters_users.route('/reporter/sign_out')
-@login_required(role="WORKER")
-def signout_reporter():
-    logout_user()
-    return redirect(url_for('core.index'))
