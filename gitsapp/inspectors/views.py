@@ -31,9 +31,6 @@ def login_inspector():
             return redirect(url_for('inspectors_users.dash'))
         
 
-        return redirect (url_for('reporters_users.dash'))
-        
-
     form = LoginForm(request.form)
     if form.validate_on_submit():
         
@@ -92,4 +89,3 @@ def reports(report_id):
     if all_reports.author != current_user:
         abort(403)
             
-        
