@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>All Reports</h2>
+<div>
+    <table class="table table-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Supervisor First Name</th>
+            <th scope="col">Supervisor Last Name</th>
+            <th scope="col">Crew Id</th>
+            <th scope="col">Date of Incident</th>
+            <th scope="col">Scale of Cleanup</th>
+            <th scope="col">Type Of Building</th>
+            <th scope="col">Street Address</th>
+            <th scope="col">Zipcode</th>
+            <th scope="col">State</th>
+            <th scope="col">Cross Street</th>
+            <th scope="col">Notes</th>
+
+        </tr>
+        <tbody>
+            {% for report in reports %}
+            <tr>
+              <th scope="row">
+                  <a href="{{url_for('inspectors_users.legi_report',report_id=report.id)}}">{{report.id}}</a>
+                </th>
+              <td>{{report.first_name}}</td>
+              <td>{{report.last_name}}</td>
+              <td>{{report.supervisor_fname}}</td>
+              <td>{{report.supervisor_lname}}</td>
+              <td>{{report.crew_id}}</td>
+              <td>{{report.date_of_incident}}</td>
+              <td>{{report.type_of_building}}</td>
+              <td>{{report.street_address}}</td>
+              <td>{{report.zipcode}}</td>
+              <td>{{report.state}}</td>
+              <td>{{report.cross_street}}</td>
+              <td>{{report.notes}}</td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

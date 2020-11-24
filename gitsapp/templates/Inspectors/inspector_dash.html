@@ -3,10 +3,13 @@
 
 <div class="jumbotron">
     <h1>Welcome Inspector {{curr_user.email}}</h1>
+    <a href="{{url_for('inspectors_users.all_reports')}}" class="btn btn-outline-primary">
+        Edit or track reports
+    </a>
 
-        <a class="btn btn-outline-primary" href="{{url_for('inspectors_users.signout_inspector')}}"> 
-            Sign out
-        </a>
+    <a class="btn btn-outline-primary" href="{{url_for('inspectors_users.signout_inspector')}}">
+        Sign out
+    </a>
 </div>
-  
+
 {% endblock %}

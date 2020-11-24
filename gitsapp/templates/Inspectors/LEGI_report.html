@@ -1,4 +1,104 @@
 {% extends "base.html" %}
 {% block content %}
+<title>Law Enforcement Graffiti Incident Entry </title> <!-- This is title of page tab -->
+<link href="{{url_for('static', filename='styles/ccie_style_sheet.css')}}" rel="stylesheet">
+<a class="btn btn-secondary" href="{{url_for('core.index')}}"> X</a>
+<div class="page_container">
+
+
+    <form method=POST>
+        
+        <div class="column">
+            <!-- This is for the crew info -->
+            <div class="info_box">
+                <h1>Crew Information</h1>
+                <!-- This is the first column of input-->
+                <div class="column">
+                    <!-- <form method="POST"> -->
+                    {{report.first_name}} <br>
+
+                    {{report.supervisor_fname}} <br>
+
+
+                    {{report.crew_id}} <br>
+
+
+                    {{report.scale_of_cleanup}} <br>
+
+
+
+                    
+                    <!-- </form> -->
+                </div>
+                <!-- This is the second column of input-->
+                <div class="column">
+                    <!-- <form method="POST"> -->
+                    {{report.last_name}} <br>
+                    
+
+                    {{report.supervisor_lname}} <br>
+
+
+                    {{report.date_of_incident}} <br>
+                    <!-- </form> -->
+                </div>
+            </div>
+            <p> </p>
+            <!-- This is for the incident report -->
+            <div class="info_box">
+                <h1>Incident Report</h1>
+                <!-- <form method="POST"> -->
+                {{report.type_of_building}}
+
+                <!-- </form> -->
+                <br><br>
+
+                <div class="column">
+                    <!-- <form method="POST"> -->
+                    {{report.street_address}}<br>
+
+
+                    {{report.zipcode}}<br>
+                </div>
+
+                <div class="column">
+                    <!-- <form method="POST"> -->
+                    {{report.cross_street}}<br>
+
+
+                    {{report.state}}
+                    <!-- </form> -->
+
+                </div>
+                <!-- <div id="map"></div> -->
+
+            </div>
+        </div>
+
+
+        <p></p>
+        <div class="column">
+            <!-- This is for the notes -->
+            <div class="info_box2">
+                <h1>Notes of the Incident</h1>
+                <label for="w3review"></label>
+                {{report.notes}}
+            </div>
+            <p></p>
+            <!-- TODO: FIX - Once we figure out how to upload files-->
+            <h3>Click on the "Choose File" button to upload a file:</h3>
+            <!-- <form method="POST"> -->
+            <input type="file" id="myFile" name="filename">
+
+            <!-- </form> -->
+        </div>
+        <br>
+        
+
+    </form>
+
+
+
+</div>
 
 {% endblock %}
