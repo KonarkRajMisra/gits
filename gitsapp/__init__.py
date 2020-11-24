@@ -4,13 +4,23 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_googlemaps import GoogleMaps
 from flask_login import LoginManager, current_user
 from functools import wraps
+import googlemaps
+
+
 
 app = Flask(__name__)
 
+
 #Configurations
 app.config['SECRET_KEY'] = 'mysecretkey'
+app.config['GOOGLEMAPS_KEY'] = "AIzaSyD7IJ8NOPPuyGymr2fStLpV-TJfda1JRsY"
+
+GoogleMaps(app)
+gmap = googlemaps.Client(key=app.config['GOOGLEMAPS_KEY'])
+
 
 #db setup
 basedir = os.path.abspath(os.path.dirname(__file__))

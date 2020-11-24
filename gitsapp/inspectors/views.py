@@ -5,7 +5,7 @@ from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, logout_user 
 from flask import render_template, url_for, flash, redirect, request, Blueprint
-
+from flask_googlemaps import Map
 #inspector flow
 inspectors_users = Blueprint('inspectors_users', __name__)
 
@@ -20,8 +20,6 @@ def register_inspector():
         db.session.commit()
        
         return redirect(url_for('inspectors_users.login_inspector'))
-
-    print(form.errors)
     return render_template('inspectors/register_inspector.html',form=form)
 
 
@@ -38,10 +36,11 @@ def login_inspector():
         
         inspector = User.query.filter_by(email=form.email.data).first()
         
-        if inspector.check_pwd(form.password.data) and inspector:
+        if inspector and inspector.check_pwd(form.password.data):
             login_user(inspector)
+            return redirect(url_for('inspectors_users.dash'))
 
-        return redirect(url_for('inspectors_users.dash'))
+        
     return render_template('inspectors/login_inspector.html',form=form)
 
 
@@ -49,7 +48,26 @@ def login_inspector():
 @inspectors_users.route('/inspector/dash', methods=['GET'])
 @login_required(role="LAW")
 def dash():
-    return render_template('inspectors/inspector_dash.html', curr_user= current_user)
+
+    reports = Report.query.all()
+    pins = [];
+
+    for report in reports:
+        pin_info = {
+            "lat": report.gps_lat,
+            "lng": report.gps_lng,
+            #TODO Add link to LEGI form lnk: url_for('')
+
+        }
+
+        pins.append(pin_info)
+
+    report_map = Map(identifier="reports_map", lat=39.8283, lng=-98.5795,marker=pins )
+    
+    
+    
+
+    return render_template('inspectors/inspector_dash.html', curr_user= current_user, pins=pins)
 
 @inspectors_users.route('/inspector/sign_out')
 @login_required(role="LAW")
