@@ -47,38 +47,6 @@ class User(db.Model, UserMixin):
     
     def __repr__(self):
         return f"User's Email: {self.email}"
-
-# class Reporter(db.Model, UserMixin):
-    
-#     __tablename__ = 'reporters'
-
-    #relationship between reporter and report is one to one
-    #reports = db.relationship('Report', backref='author',lazy=True)
-   
-    
-  
-    
-# class Inspector(db.Model, UserMixin):
-    
-#     __tablename__ = 'inspectors'
-#     id = db.Column(db.Integer, primary_key=True)
-#     email = db.Column(db.String(64),unique=True, index=True)
-#     pwd_hash = db.Column(db.String(128))
-#     urole = db.Column(db.String(80))
-    #report to inspector is many to many relationship
-    #as all inspectors can access all reports
-    #report = db.relationship('Report',secondary=link)
-    
-    # def __init__(self,email,password, urole):
-    #     self.email = email
-    #     self.pwd_hash = generate_password_hash(password)
-    #     self.urole = urole
-        
-    # def check_pwd(self,password):
-    #     return check_password_hash(self.pwd_hash,password)
-    
-    # def __repr__(self):
-    #     return f"Inspector's email: {self.email}"
     
 class Report(db.Model):
     
@@ -136,6 +104,11 @@ class Report(db.Model):
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
     
+    def has_keyword(self, keyword):
+        if (keyword in str.lower(self.first_name)) or (keyword in str.lower(self.last_name)) or (keyword in str.lower(self.supervisor_fname)) or (keyword in str.lower(self.supervisor_lname)) or (keyword in str.lower(str(self.crew_id))) or (keyword in str.lower(self.scale_of_cleanup)) or (keyword in str.lower(self.type_of_building)) or (keyword in str.lower(self.street_address)) or (keyword in str.lower(str(self.zipcode))) or (keyword in str.lower(self.state)) or (keyword in str.lower(self.cross_street)) or (keyword in str.lower(str(self.gps_lat))) or (keyword in str.lower(str(self.gps_lng))) or (keyword in str.lower(str(self.notes))):
+            return True
+
+        return False
 
         
 
