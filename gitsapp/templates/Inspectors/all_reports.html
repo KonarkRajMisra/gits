@@ -24,13 +24,9 @@
             {% for report in reports %}
             <tr>
               <th scope="row">
-<<<<<<< HEAD
-                  <a href="{{url_for('inspectors_users.legi_report',report_id=report.id)}}">{{report.id}}</a>
-=======
                   <a href="{{url_for('inspectors_users.legi_report',report_id=report.id )}}">
                       {{report.id}}
                     </a>
->>>>>>> eec7bcc6e99219f7870136ed32782e464356ff06
                 </th>
               <td>{{report.first_name}}</td>
               <td>{{report.last_name}}</td>

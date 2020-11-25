@@ -38,11 +38,7 @@ def login_inspector():
         
         if inspector and inspector.check_pwd(form.password.data):
             login_user(inspector)
-<<<<<<< HEAD
-        #add errors for NONE Users
-=======
             return redirect(url_for('inspectors_users.dash'))
->>>>>>> eec7bcc6e99219f7870136ed32782e464356ff06
 
         
     return render_template('inspectors/login_inspector.html',form=form)
