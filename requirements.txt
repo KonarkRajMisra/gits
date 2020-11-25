@@ -3,9 +3,11 @@ Flask-Login
 Flask-Migrate
 Flask-SQLAlchemy
 Flask-WTF
+flask_googlemaps
 Jinja2
 Mako
 SQLAlchemy
 Werkzeug
 WTForms
 email_validator
+googlemaps

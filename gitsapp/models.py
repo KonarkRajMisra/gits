@@ -7,6 +7,12 @@ from flask_login import UserMixin
 from datetime import date, datetime
 
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> eec7bcc6e99219f7870136ed32782e464356ff06
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
@@ -61,9 +67,15 @@ class Report(db.Model):
     gps_lng = db.Column(db.Float(2), nullable=False)
     notes = db.Column(db.String(256),nullable=True)
 
+<<<<<<< HEAD
     
 
     def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state, gps_lat, gps_lng, notes=None, cross_street=None):
+=======
+        
+
+    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state,  gps_lat, gps_lng, notes=None, cross_street=None):
+>>>>>>> eec7bcc6e99219f7870136ed32782e464356ff06
         self.first_name = first_name
         self.last_name = last_name
         self.supervisor_fname = supervisor_fname
