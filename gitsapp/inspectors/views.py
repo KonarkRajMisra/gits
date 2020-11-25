@@ -38,8 +38,9 @@ def login_inspector():
         
         inspector = User.query.filter_by(email=form.email.data).first()
         
-        if inspector.check_pwd(form.password.data) and inspector:
+        if inspector and inspector.check_pwd(form.password.data):
             login_user(inspector)
+        #add errors for NONE Users
 
         return redirect(url_for('inspectors_users.dash'))
     return render_template('inspectors/login_inspector.html',form=form)

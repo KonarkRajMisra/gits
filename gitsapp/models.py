@@ -6,23 +6,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from datetime import date, datetime
 
-#load users for: Reporter and Inspector
+
 @login_manager.user_loader
-def load_reporter(user_id):
+def load_user(user_id):
     return User.query.get(user_id)
 
 
-
 class User(db.Model, UserMixin):
-    
-    __tablename__ = 'users'
+    __tablename__= 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True, index=True)
     pwd_hash = db.Column(db.String(128))
-    #relationship between reporter and report is one to one
-    #reports = db.relationship('Report', backref='author',lazy=True)
     urole = db.Column(db.String(80))
-    
+
     def __init__(self, email, password, urole):
         self.email = email
         self.pwd_hash = generate_password_hash(password)
@@ -33,6 +29,7 @@ class User(db.Model, UserMixin):
     
     def __repr__(self):
         return f"User's Email: {self.email}"
+
     
 
 class Report(db.Model):
@@ -59,12 +56,14 @@ class Report(db.Model):
     state = db.Column(db.String(256), nullable=False)
     cross_street = db.Column(db.String(256), nullable=True)
 
-
     #TODO: image
+    gps_lat = db.Column(db.Float(2), nullable=False)
+    gps_lng = db.Column(db.Float(2), nullable=False)
     notes = db.Column(db.String(256),nullable=True)
+
     
-   
-    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state, cross_street=None, notes=None):
+
+    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state, gps_lat, gps_lng, notes=None, cross_street=None):
         self.first_name = first_name
         self.last_name = last_name
         self.supervisor_fname = supervisor_fname
@@ -77,6 +76,8 @@ class Report(db.Model):
         self.zipcode = zipcode
         self.state = state
         self.cross_street = cross_street
+        self.gps_lat = gps_lat
+        self.gps_lng = gps_lng
         self.notes = notes
     
     def __repr__(self) -> str:
