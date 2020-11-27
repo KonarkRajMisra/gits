@@ -10,7 +10,7 @@
     <div class="page_container">
         
 
-        <form method=POST>
+        <form method=POST enctype="multipart/form-data">
             {{form.hidden_tag()}}
             <div class="column">
                 <!-- This is for the crew info -->
@@ -97,10 +97,9 @@
                     {{form.notes(rows="20", cols="65")}}
                 </div>
                 <p></p>
-                <!-- TODO: FIX - Once we figure out how to upload files-->
                 <h3>Click on the "Choose File" button to upload a file:</h3>
                 <!-- <form method="POST"> -->
-                    <input type="file" id="myFile" name="filename">
+                {{form.photo()}}
                     
                 <!-- </form> -->
             </div>
