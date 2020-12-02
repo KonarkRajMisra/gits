@@ -6,8 +6,8 @@
 <div class="page_container">
 
 
-    <form method=POST>
-        
+    <form method="POST">
+        {{form.hidden_tag()}}
         <div class="column">
             <!-- This is for the crew info -->
             <div class="info_box">
@@ -46,14 +46,15 @@
             <div class="info_box">
                 <h1>Incident Report</h1>
                 <!-- <form method="POST"> -->
-                {{report.type_of_building}}
+                {{form.building_type(value=report.type_of_building)}}
+                
 
                 <!-- </form> -->
                 <br><br>
 
                 <div class="column">
                     <!-- <form method="POST"> -->
-                    {{report.street_address}}<br>
+                    {{form.street_address(value=report.street_address)}}
 
 
                     {{report.zipcode}}<br>
@@ -61,7 +62,7 @@
 
                 <div class="column">
                     <!-- <form method="POST"> -->
-                    {{report.cross_street}}<br>
+                    {{form.cross_street(value=report.cross_street)}}<br>
 
 
                     {{report.state}}
@@ -87,6 +88,9 @@
             <h3>Click on the "Choose File" button to upload a file:</h3>
             <!-- <form method="POST"> -->
             <input type="file" id="myFile" name="filename">
+            <br>
+
+            {{form.submit}}
 
             <!-- </form> -->
         </div>

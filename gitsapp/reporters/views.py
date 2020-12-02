@@ -64,8 +64,8 @@ def ccie_report():
 
         #basic check to make sure address matches state
         if(result[0].get("address_components")[5].get("long_name") != form.state.data):
-            form.errors.append('Invalid state')
-            return render_tempalte('Reporters/CCIE_report.html', form=form)
+            #form.errors.append('Invalid state')
+            return render_template('Reporters/CCIE_report.html', form=form)
 
         
         report = Report(

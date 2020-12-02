@@ -1,6 +1,6 @@
 from os import abort
 from gitsapp.models import User,Report
-from gitsapp.inspectors.forms import RegistrationForm,LoginForm
+from gitsapp.inspectors.forms import RegistrationForm,LoginForm,LegiReportForm
 from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, logout_user 
@@ -50,7 +50,7 @@ def login_inspector():
 def dash():
 
     reports = Report.query.all()
-    pins = [];
+    pins = []
 
     for report in reports:
         pin_info = {
@@ -85,7 +85,16 @@ def all_reports():
 @login_required(role="LAW")
 def legi_report(report_id):
     report = Report.query.filter_by(id=report_id).first()
-    return render_template('inspectors/LEGI_report.html',report=report)
+    report_update_form = LegiReportForm()
+    print(report_update_form.errors)
+    print(report_update_form.validate_on_submit())
+    if report_update_form.validate_on_submit():
+        report.type_of_building = report_update_form.building_type.data
+        report.street_address = report_update_form.street_address.data
+        report.cross_street = report_update_form.cross_street.data
+        db.session.commit()
+        return redirect(url_for('inspectors_users.all_reports'))
+    return render_template('inspectors/LEGI_report.html',report=report,form=report_update_form)
 
 
 

@@ -28,7 +28,7 @@ class RegistrationForm(FlaskForm):
 #Form for LEGI report
 class LegiReportForm(FlaskForm):
     building_type = SelectField('Building Type:', choices=building_choices)
-    street_address = StringField('Address',validators=[DataRequired()])
+    street_address = StringField('Address',validators=None)
     cross_street = StringField('Cross Street (If known):', validators=None)
     #TODO: gps_coordinates
     #TODO: images
