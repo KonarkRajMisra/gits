@@ -1,6 +1,6 @@
 from os import abort
-from gitsapp.models import User
-from gitsapp.inspectors.forms import RegistrationForm,LoginForm
+from gitsapp.models import User, Report
+from gitsapp.inspectors.forms import RegistrationForm,LoginForm, GaReportForm
 from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, logout_user 
@@ -53,7 +53,7 @@ def login_inspector():
 def dash():
 
     reports = Report.query.all()
-    pins = [];
+    pins = []
 
     for report in reports:
         pin_info = {
@@ -92,4 +92,15 @@ def reports(report_id):
     if all_reports.author != current_user:
         abort(403)
             
+@inspectors_users.route('/inspector/ga_report',methods=['GET'])
+# @login_required(role="LAW")
+def ga_report():
+    form = GaReportForm(request.form)   
+    
+    return render_template('inspectors/ga_report.html',form=form)
+
+    
+
+    
+
         

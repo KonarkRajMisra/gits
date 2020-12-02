@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head> 
+        <title>Graffiti Report </title> <!-- This is title of page tab -->
+        <link href="{{url_for('static', filename='styles/ga_style_sheet.css')}}" rel="stylesheet">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7IJ8NOPPuyGymr2fStLpV-TJfda1JRsY&callback=initMap&libraries=&v=weekly"
+        defer
+        ></script>
+        
+        <button type="button" 
+        onclick="window.open('', '_self', ''); window.close();">X</button>
+    </head>
+    <body> 
+        <h1>Graffiti Report</h1>
+        <button>
+            <a href="{{url_for('inspectors_users.signout_inspector')}}">Sign out</a>
+        </button>
+        <button>
+            <a href="{{url_for('inspectors_users.dash')}}">Dash Board</a>
+        </button>
+        <div class=".container-flud">
+            <div class="box">
+                <div class="col-lg-4">
+                    <h2 class="text-center">Frequency of Graffiti Incidents</h2>
+                    <div class="col-lg-4">
+                        <div>
+                            {{form.start_date.label}} 
+                            {{form.start_date(type="date")}}
+    
+                            {{form.end_date.label}} 
+                            {{form.end_date(type="date")}}
+                        </div>
+                        <p></p>
+                        <div>
+                            {{form.start_gps_lat.label}} 
+                            {{form.start_gps_lat()}}
+
+                            {{form.end_gps_lat.label}}
+                            {{form.end_gps_lat()}}
+                        </div>
+                        <p></p>
+                        <div>
+                            {{form.start_gps_lng.label}}
+                            {{form.start_gps_lng()}}
+                            {{form.end_gps_lng.label}}
+                            {{form.end_gps_lng()}}
+                        </div>
+                        <p></p>
+                        {{form.suspect_name.label}} <br>
+                        {{form.suspect_name()}}<br>
+    
+                        {{form.gang_name.label}} <br>
+                        {{form.gang_name()}}<br>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div id="map"></div>
+                    <button><!--will need to be fixed  -->
+                         <a href="{{url_for('inspectors_users.ga_report')}}">Calculate</a>
+                    </button>
+                    
+                </div>
+                <div class="col-lg-4">
+                    <h2 class="text-center">Hotspot Calculator</h2>
+                    <div class="col-lg-4">
+                        {{form.day_thresh.label}} <br>
+                        {{form.day_thresh()}}<br>
+
+                        {{form.coord_thresh_lat.label}} <br>
+                        {{form.coord_thresh_lat()}}<br>
+                        
+                        {{form.coord_thresh_lng.label}} <br>
+                        {{form.coord_thresh_lng()}}<br>
+
+                        {{form.mile_range.label}} <br>
+                        {{form.mile_range()}}<br>
+
+                    </div>
+                </div>
+            </div>
+            <div class="about">
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="#">About Us</a>
+                    <a class="nav-link" href="#">Contact</a>
+                    <a class="nav-link" href="#">Help</a>
+                    <a class="nav-link" href="#">FAQ</a>
+                  </nav>
+            </div>
+        </div>
+    </body>
+</html>
