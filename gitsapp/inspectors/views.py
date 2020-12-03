@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, logout_user 
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_googlemaps import Map
+from collections import Counter
 #inspector flow
 inspectors_users = Blueprint('inspectors_users', __name__)
 
@@ -64,9 +65,6 @@ def dash():
 
     report_map = Map(identifier="reports_map", lat=39.8283, lng=-98.5795,marker=pins )
     
-    
-    
-
     return render_template('inspectors/inspector_dash.html', curr_user= current_user, pins=pins)
 
 @inspectors_users.route('/inspector/sign_out')
@@ -97,5 +95,48 @@ def legi_report(report_id):
     return render_template('inspectors/LEGI_report.html',report=report,form=report_update_form)
 
 
+@inspectors_users.route('/inspector/graffiti_analysis', methods=['GET'])
+@login_required(role="LAW")
+def graffiti_analysis():
 
-            
+    reports = Report.query.order_by(Report.id).all()
+    date_frequency = Counter()
+    zip_frequency = Counter()
+    gps_range = Counter()
+    suspect_names = Counter()
+    crew_ids = Counter()
+
+    for report in reports:
+
+        if str(report.date_of_incident).split(" ")[0] in date_frequency:
+            date_frequency[str(report.date_of_incident).split(" ")[0]] += 1
+        elif str(report.date_of_incident).split(" ")[0] not in date_frequency:
+            date_frequency[str(report.date_of_incident).split(" ")[0]] = 1
+        
+        if report.zipcode in zip_frequency:
+            zip_frequency[report.zipcode] += 1
+
+        elif report.zipcode not in zip_frequency:
+            zip_frequency[report.zipcode] = 1
+
+
+        lat = (report.gps_lat, report.gps_lng)
+
+        if lat in gps_range:
+            gps_range[lat] += 1
+        elif lat not in gps_range:
+            gps_range[lat] = 1
+
+        suspect_name = (report.first_name + report.last_name).upper()
+        if suspect_name in suspect_names:
+            suspect_names[suspect_name] += 1
+        elif suspect_name not in suspect_names:
+            suspect_names[suspect_name] = 1
+
+        if report.crew_id in crew_ids:
+            crew_ids[report.crew_id] += 1
+        elif report.crew_id not in crew_ids:
+            crew_ids[report.crew_id] = 1
+
+        
+    return render_template('inspectors/graffitianalysis.html',reports=reports, date_frequency= date_frequency, zip_frequency = zip_frequency,gps_range = gps_range,suspect_names = suspect_names,crew_ids = crew_ids)

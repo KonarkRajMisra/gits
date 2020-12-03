@@ -1,56 +1,66 @@
-{% extends "base.html" %}
-{% block content %}
-                
+{% extends "base.html" %} {% block content %}
+
 <head>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7IJ8NOPPuyGymr2fStLpV-TJfda1JRsY&callback=initMap&libraries=&v=weekly"
-        defer></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7IJ8NOPPuyGymr2fStLpV-TJfda1JRsY&callback=initMap&libraries=&v=weekly"
+    defer
+  ></script>
 
-    <style type="text/css">
-        /* Set the size of the div element that contains the map */
-        #map {
-            height: 400px;
-            /* The height is 400 pixels */
-            width: 100%;
-            /* The width is the width of the web page */
-        }
-    </style>
+  <style type="text/css">
+    /* Set the size of the div element that contains the map */
+    #map {
+      height: 400px;
+      /* The height is 400 pixels */
+      width: 100%;
+      /* The width is the width of the web page */
+    }
+  </style>
 
-    <script>
-        var map = null;
-        // Initialize and add the map
-        function initMap() {
-            const unStates = { lat:39.8283, lng:-98.5795 };
-            map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 4,
-            center: unStates,
-            });           
-        }
+  <script>
+    var map = null;
+    // Initialize and add the map
+    function initMap() {
+      const unStates = { lat: 39.8283, lng: -98.5795 };
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 4,
+        center: unStates,
+      });
+    }
 
-        function addMarkers(pins) {
-            pins.forEach(coords => {
-                const marker = new google.maps.Marker({
-                    position:coords,
-                    map:map
-                })
-
-
-            })
-
-        }
-
-    </script>
+    function addMarkers(pins) {
+      pins.forEach((coords) => {
+        const marker = new google.maps.Marker({
+          position: coords,
+          map: map,
+        });
+      });
+    }
+  </script>
 </head>
 
 <div class="jumbotron">
-    <h1>Welcome Inspector {{curr_user.email}}</h1>
-    <a href="{{url_for('inspectors_users.all_reports')}}" class="btn btn-outline-primary">
-        Edit or track reports
-    </a>
+  <h1>Welcome Inspector {{curr_user.email}}</h1>
+  <a
+    href="{{url_for('inspectors_users.all_reports')}}"
+    class="btn btn-outline-primary"
+  >
+    Edit or track reports
+  </a>
 
-        <a class="btn btn-outline-primary" href="{{url_for('inspectors_users.signout_inspector')}}"> 
-            Sign out
-        </a>
+  <a
+    class="btn btn-outline-primary"
+    href="{{url_for('inspectors_users.signout_inspector')}}"
+  >
+    Sign out
+  </a>
+
+  <a
+    class="btn btn-outline-primary"
+    href="{{url_for('inspectors_users.graffiti_analysis')}}"
+  >
+    Graffiti Analysis
+  </a>
   {{googlemap("reports_map", lat=39.8283, lng=-98.5795, markers=pins, zoom=2)}}
 </div>
-  
+
 {% endblock %}
