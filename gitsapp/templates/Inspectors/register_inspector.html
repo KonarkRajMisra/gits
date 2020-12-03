@@ -3,19 +3,51 @@
 
 <div class="container">
     <div class="jumbotron">
+        <div class="d-flex justify-content-center h-100">
+            <div class="card">
+                <div class="card-header">
+                    <h3> Register </h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{form.hidden_tag()}}
+                        <div class="input-group form-group">
+                            <label>
+                                {{form.email.label}}
+                            </label>
+                            <div class="input-group form-group">
+                                {{form.email(class_='form-control')}}
+                            </div>
+                        </div>
+                        
+                        
 
-        <form method="POST">
+                        <div class="input-group form-group">
+                            <label>
+                                {{form.password.label}} 
+                            </label>
+                            <div class="input-group form-group">
+                                {{form.password(class_='form-control')}}
+                            </div>
+                            
+                        </div>
 
-
-            {{form.hidden_tag()}}
-            {{form.email.label}} {{form.email()}} <br>
-            {{form.password.label}} {{form.password()}} <br> 
-            {{form.pass_confirm.label}} {{form.pass_confirm()}} <br>
-            {{form.submit()}}
-
-
-        </form>
-
+                        <div class="input-group form-group">
+                            <label>
+                                {{form.pass_confirm.label}}  
+                            </label>
+                            <div class="input-group form-group">
+                                {{form.pass_confirm(class_='form-control')}}
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            {{form.submit(class_='btn btn-primary btn-block')}}
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </div>
     </div>
 </div>
 

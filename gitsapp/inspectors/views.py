@@ -1,5 +1,5 @@
 from os import abort
-from gitsapp.models import User
+from gitsapp.models import User,Report
 from gitsapp.inspectors.forms import RegistrationForm,LoginForm
 from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -29,9 +29,6 @@ def login_inspector():
     if current_user.is_authenticated:
         if(current_user.urole == "LAW"):
             return redirect(url_for('inspectors_users.dash'))
-        
-
-        return redirect (url_for('reporters_users.dash'))
         
 
     form = LoginForm(request.form)
@@ -78,18 +75,18 @@ def signout_inspector():
     logout_user()
     return redirect(url_for('core.index'))
 
-@inspectors_users.route('/inspector/legi',methods=['GET','POST'])
-@login_required
-def legi_report():
-    pass
-
-
-#query all the reports created by the user, else give 403 unauth access
-@inspectors_users.route('/reports',methods=['GET','POST'])
+@inspectors_users.route('/inspector/all_reports',methods=['GET'])
 @login_required(role="LAW")
-def reports(report_id):
-    all_reports = Report.query.get_or_404(report_id)
-    if all_reports.author != current_user:
-        abort(403)
+def all_reports():
+    reports = Report.query.order_by(Report.id).all()
+    return render_template('inspectors/all_reports.html',reports=reports)
+
+@inspectors_users.route('/inspector/legi/<int:report_id>',methods=['GET','POST'])
+@login_required(role="LAW")
+def legi_report(report_id):
+    report = Report.query.filter_by(id=report_id).first()
+    return render_template('inspectors/LEGI_report.html',report=report)
+
+
+
             
-        

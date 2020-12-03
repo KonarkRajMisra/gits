@@ -1,6 +1,6 @@
-<!DOCTYPE html>
-<html>
-
+{% extends "base.html" %}
+{% block content %}
+                
 <head>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7IJ8NOPPuyGymr2fStLpV-TJfda1JRsY&callback=initMap&libraries=&v=weekly"
         defer></script>
@@ -41,19 +41,16 @@
     </script>
 </head>
 
-<body>
-    <h1>Welcome {{curr_user.email}}</h1>
-    <button>
-        <a href="{{url_for('inspectors_users.signout_inspector')}}">
+<div class="jumbotron">
+    <h1>Welcome Inspector {{curr_user.email}}</h1>
+    <a href="{{url_for('inspectors_users.all_reports')}}" class="btn btn-outline-primary">
+        Edit or track reports
+    </a>
+
+        <a class="btn btn-outline-primary" href="{{url_for('inspectors_users.signout_inspector')}}"> 
             Sign out
-
         </a>
-
-    </button>
-
-    {{googlemap("reports_map", lat=39.8283, lng=-98.5795, markers=pins, zoom=2)}}
-
-
-</body>
-
-</html>
+  {{googlemap("reports_map", lat=39.8283, lng=-98.5795, markers=pins, zoom=2)}}
+</div>
+  
+{% endblock %}

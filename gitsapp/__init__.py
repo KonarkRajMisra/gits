@@ -1,4 +1,5 @@
 #configuration files
+#configuration files
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -37,7 +38,6 @@ def login_required(role="ANY"):
     def wrapper(fn):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
-
             if not current_user.is_authenticated:
                return app.login_manager.unauthorized()
             urole = current_user.urole
