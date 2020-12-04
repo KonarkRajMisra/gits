@@ -88,10 +88,7 @@ def ccie_report():
         )
         db.session.add(report)
         db.session.commit()
-        return redirect(url_for('reporters_users.dash'))
-
-    
-    print(form.errors)
+        return redirect(url_for('reporters_users.dash')) 
     #otherwise show the form
     return render_template('Reporters/CCIE_report.html',form=form)
 
