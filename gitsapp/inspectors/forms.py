@@ -33,3 +33,7 @@ class LegiReportForm(FlaskForm):
     #TODO: gps_coordinates
     #TODO: images
     submit = SubmitField('Edit Report')
+
+class SearchForm(FlaskForm):
+  search = StringField('search', [DataRequired()])
+  submit = SubmitField('Search')

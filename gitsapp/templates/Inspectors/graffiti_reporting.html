@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<form method="POST">
+
+{{form.hidden_tag()}}
+<div>
+    {{form.search.label}}
+    {{form.search()}}
+    {{form.submit()}}
+</div>
+
+</form>
+<ol>
+    {%for link in report_links%}
+    <li><a href={{link}}>a</a></li>
+    {%endfor%}
+</ol>
+
+
+{% endblock %}

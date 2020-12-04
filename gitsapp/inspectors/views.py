@@ -1,6 +1,6 @@
 from os import abort
 from gitsapp.models import User,Report
-from gitsapp.inspectors.forms import RegistrationForm,LoginForm,LegiReportForm
+from gitsapp.inspectors.forms import RegistrationForm,LoginForm,LegiReportForm, SearchForm
 from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, logout_user 
@@ -140,3 +140,26 @@ def graffiti_analysis():
 
         
     return render_template('inspectors/graffitianalysis.html',reports=reports, date_frequency= date_frequency, zip_frequency = zip_frequency,gps_range = gps_range,suspect_names = suspect_names,crew_ids = crew_ids)
+
+
+
+
+@inspectors_users.route('/inspector/gr/', methods=['GET','POST'])
+@inspectors_users.route('/inspector/gr/<string:data>', methods=['GET','POST'])
+@login_required(role="LAW")
+def graffiti_reporting(data=None):
+
+    form = SearchForm()
+
+    urls = []
+    reports = []
+
+    if form.validate_on_submit():
+
+        for report in Report.query.all():
+            if report.has_keyword(form.search.data):
+                urls.append(url_for('inspectors_users.legi_report',report_id=report.id))
+                reports.append(report)
+
+    print(urls,reports)
+    return render_template('inspectors/graffiti_reporting.html',report_links=urls, report_objs=reports,form=form)
