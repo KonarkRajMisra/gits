@@ -141,6 +141,14 @@ def legi_report(report_id, new_name, del_pic_id=None, edit_pic_id=None):
         #In case suspect does not exist
         if suspect == None:
             suspect = Suspect(sus_form.first_name, sus_form.last_name, sus_form.gang, sus_form.status)
+            directory = os.path.join(app.instance_path, 'sus_photos')
+            for image in form.sus_photos.data:
+                filename=secure_filename(image.filename)
+            
+
+                file_path = os.path.join(directory, filename)
+                image.save(file_path)
+                suspect.images.append(file_path)
 
 
         #Adding images

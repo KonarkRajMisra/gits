@@ -63,7 +63,7 @@ class Report(db.Model):
     gps_lng = db.Column(db.Float(2), nullable=False)
     notes = db.Column(db.String(256),nullable=True)
     investigation_status = db.Column(db.String(64), nullable=True)      
-    images = db.Column(db.ARRAY(db.String)) 
+    images = db.relationship('Image', backref='report', lazy=True)
 
     suspect = db.relationship('Suspect', backref=db.backref('report', lazy=True))
 
@@ -87,6 +87,9 @@ class Report(db.Model):
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
     
+class Image(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    path = db.Column(db.String(128), nullable=False)
 
 class Suspect(db.Model):
 
@@ -97,6 +100,7 @@ class Suspect(db.Model):
     last_name = db.Column(db.String(64), nullable=False)
     gang_affil = db.Column(db.String(128), nullable=True)
     status = db.Column(db.String(64), nullable=True)
+    images = db.relationship('Image', backref='suspect', lazy=True)
 
     def __init__(self, first_name, last_name, gang, status):
         self.first_name = first_name
