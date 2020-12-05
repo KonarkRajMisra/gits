@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField,SubmitField,SelectField
+from wtforms import StringField,PasswordField,SubmitField,SelectField,IntegerField, MultipleFileField
+from flask_wtf.file import FileAllowed
 from wtforms.validators import DataRequired,Email,EqualTo
 from wtforms import ValidationError
 from gitsapp.reporters.forms import building_choices
@@ -28,8 +29,17 @@ class RegistrationForm(FlaskForm):
 #Form for LEGI report
 class LegiReportForm(FlaskForm):
     building_type = SelectField('Building Type:', choices=building_choices)
-    street_address = StringField('Address',validators=[DataRequired()])
+    moniker = StringField('Moniker (If known):', validators=None)
+    street_address = StringField('Address:',validators=[DataRequired()])
+    zipcode = IntegerField('Zipcode:',validators=[DataRequired()])
     cross_street = StringField('Cross Street (If known):', validators=None)
-    #TODO: gps_coordinates
-    #TODO: images
+    cleanup = SelectField('Scale of Cleanup (Damage):', choices=['Small', 'Moderate', 'Large'])
+    investigation_status = SelectField('Status of Investigation:', choices=['New', 'In Process', 'In litigation', 'Resolved'])
+    new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
     submit = SubmitField('Edit Report')
+
+class SuspectForm(FlaskForm):
+    first_name = StringField('Suspect First Name (If Known):', validators=None)
+    last_name = StringField('Suspect Last Name (If Known):', validators=None)
+    gang = StringField('Suspect Gang Affiliation (If Known):', validators =None)
+    status = SelectField('Status of suspect:', choices=['Unknown', 'Identified', 'In Custody', 'Released'])

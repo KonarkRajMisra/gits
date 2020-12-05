@@ -58,13 +58,14 @@ class Report(db.Model):
     zipcode = db.Column(db.Integer, nullable=False)
     state = db.Column(db.String(256), nullable=False)
     cross_street = db.Column(db.String(256), nullable=True)
-
-    #TODO: image
+    moniker = db.Column(db.String(64), nullable=True)
     gps_lat = db.Column(db.Float(2), nullable=False)
     gps_lng = db.Column(db.Float(2), nullable=False)
     notes = db.Column(db.String(256),nullable=True)
+    investigation_status = db.Column(db.String(64), nullable=True)      
+    images = db.Column(db.ARRAY(db.String)) 
 
-        
+    suspect = db.relationship('Suspect', backref=db.backref('report', lazy=True))
 
     def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state,  gps_lat, gps_lng, notes=None, cross_street=None):
         self.first_name = first_name
@@ -86,3 +87,22 @@ class Report(db.Model):
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
     
+
+class Suspect(db.Model):
+
+    __tablename__ = 'suspect'
+
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(64), nullable=False)
+    last_name = db.Column(db.String(64), nullable=False)
+    gang_affil = db.Column(db.String(128), nullable=True)
+    status = db.Column(db.String(64), nullable=True)
+
+    def __init__(self, first_name, last_name, gang, status):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.gang_affil = gang
+        self.status = status
+
+    def __repr__(self) -> str:
+        return f"Name: {self.first_name}"

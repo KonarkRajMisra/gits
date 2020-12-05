@@ -101,7 +101,6 @@ class CCIEReportForm(FlaskForm):
     sup_fname = StringField("Supervisor's First Name:", validators=[DataRequired()])
     sup_lname = StringField("Supervisor's Last Name:", validators=[DataRequired()])
     crew = StringField('Crew ID:', validators=[DataRequired(), Length(4, 4, "Crew ID must be 4 digits")])
-    #needs to be empty for now
     date = DateField('Date of Incident',validators=[DataRequired()])
     cleanup = SelectField('Scale of Cleanup:', choices=['Small', 'Moderate', 'Large'])
     building_type = SelectField('Building Type:', choices=building_choices)
@@ -114,5 +113,5 @@ class CCIEReportForm(FlaskForm):
     submit = SubmitField('Create Report')
     
     
-    
+
         
