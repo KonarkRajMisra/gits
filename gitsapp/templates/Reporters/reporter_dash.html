@@ -1,17 +1,15 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+{% block content %}
 
+<div class="jumbotron">
+    <h1>Welcome Reporter {{current_user.email}}</h1>
+    <a href="{{url_for('reporters_users.ccie_report')}}" class="btn btn-outline-primary"> 
+        Create Report
+    </a>
 
-    <body>
-        <h1>Welcome {{curr_user.email}}</h1>
-        <button>
-            <a href="{{url_for('reporters_users.signout_reporter')}}"> 
-                Sign out
-
-            </a>
-
-        </button>
-        
-    </body>
-
-</html>
+        <a class="btn btn-outline-primary" href="{{url_for('reporters_users.signout_reporter')}}"> 
+            Sign out
+        </a>
+</div>
+  
+{% endblock %}

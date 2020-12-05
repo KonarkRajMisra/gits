@@ -95,6 +95,11 @@ def ccie_report():
     #otherwise show the form
     return render_template('Reporters/CCIE_report.html',form=form)
 
+@reporters_users.route('/reporter/sign_out')
+@login_required(role="WORKER")
+def signout_reporter():
+    logout_user()
+    return redirect(url_for('core.index'))
 
 #query all the reports created by the user, else give 403 unauth access
 @reporters_users.route('/reporter/reports',methods=['GET','POST'])
@@ -103,9 +108,3 @@ def reports(report_id):
     report = Report.query.get_or_404(report_id)
     return render_template('reports.html',report=report)
             
-
-@reporters_users.route('/reporter/sign_out')
-@login_required(role="WORKER")
-def signout_reporter():
-    logout_user()
-    return redirect(url_for('core.index'))
