@@ -35,8 +35,11 @@ def login_inspector():
     if form.validate_on_submit():
         
         inspector = User.query.filter_by(email=form.email.data).first()
+
+        if(inspector.urole == "WORKER"):
+            form.email.errors.append("This is a City Worker account. Use the City Worker login to use this account")
         
-        if inspector and inspector.check_pwd(form.password.data):
+        elif inspector and inspector.check_pwd(form.password.data):
             login_user(inspector)
             return redirect(url_for('inspectors_users.dash'))
 
