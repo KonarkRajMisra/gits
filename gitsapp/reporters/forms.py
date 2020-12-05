@@ -106,7 +106,7 @@ class CCIEReportForm(FlaskForm):
     building_type = SelectField('Building Type:', choices=building_choices)
     city = StringField('Name of City:', validators=[DataRequired()])
     state = SelectField('State:', choices=state_choices)
-    street_address = StringField('Address',validators=[DataRequired()])
+    street_address = StringField('Address (No abreviations)',validators=[DataRequired()])
     cross_street = StringField('Cross Street (If known):', validators=None)
     zipcode = IntegerField('Zipcode',validators=[DataRequired()])
     notes = TextAreaField('Notes',validators=None)

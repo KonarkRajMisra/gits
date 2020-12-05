@@ -2,7 +2,7 @@
 
 {% block content %}
 <title>City Crew Incident Entry </title> <!-- This is title of page tab -->
-<link href="{{url_for('static', filename='styles/ccie_style_sheet.css')}}" rel="stylesheet">
+<link href="{{url_for('static', filename='css/ccie_style_sheet.css')}}" rel="stylesheet">
 <a class="btn btn-secondary" href="{{url_for('core.index')}}"> X</a>
 <div class="page_container">
 
@@ -17,13 +17,13 @@
                 <div class="column">
                     <!-- <form method="POST"> -->
                     {{form.first_name.label}} <br>
-                    {{form.first_name()}}<br>
+                    {{form.first_name(placeholder="Alex")}}<br>
 
                     {{form.sup_fname.label}} <br>
-                    {{form.sup_fname()}}<br>
+                    {{form.sup_fname(placeholder="Raymond")}}<br>
 
                     {{form.crew.label}} <br>
-                    {{form.crew()}}<br>
+                    {{form.crew(placeholder="####")}}<br>
 
                     {{form.cleanup.label}} <br>
                     {{form.cleanup()}}
@@ -36,10 +36,10 @@
                 <div class="column">
                     <!-- <form method="POST"> -->
                     {{form.last_name.label}} <br>
-                    {{form.last_name()}}<br>
+                    {{form.last_name(placeholder="Doe")}}<br>
 
                     {{form.sup_lname.label}} <br>
-                    {{form.sup_lname()}}<br>
+                    {{form.sup_lname(placeholder="Madachy")}}<br>
 
                     {{form.date.label}} <br>
                     {{form.date(type="date")}}
@@ -60,19 +60,19 @@
                 <div class="column">
                     <!-- <form method="POST"> -->
                     {{form.street_address.label}}<br>
-                    {{form.street_address()}}<br>
+                    {{form.street_address(placeholder="5500 Campanile Drive")}}<br>
 
                     {{form.city.label}}<br>
-                    {{form.city()}}<br>
+                    {{form.city(placeholder="San Diego")}}<br>
 
                     {{form.zipcode.label}}<br>
-                    {{form.zipcode()}}<br>
+                    {{form.zipcode(placeholder="92182")}}<br>
                 </div>
 
                 <div class="column">
                     <!-- <form method="POST"> -->
                     {{form.cross_street.label}}<br>
-                    {{form.cross_street()}}<br>
+                    {{form.cross_street(placeholder="6075 Aztec Circle Drive")}}<br>
 
                     {{form.state.label}}
                     {{form.state()}}

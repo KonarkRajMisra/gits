@@ -8,7 +8,25 @@ from gitsapp.reporters.forms import building_choices
 from flask_login import current_user
 from gitsapp.models import User
 
+cleanup_choice = [
+    'Small',
+    'Moderate',
+    'Large'
+]
 
+invest_status = [
+    'New',
+    'In Process',
+    'In Litigation',
+    'Resolved'
+]
+
+suspect_status = [
+    'Unknown',
+    'Identified',
+    'In Custody',
+    'Released'
+]
 class LoginForm(FlaskForm):
     email = StringField('Email',validators=[DataRequired(),Email()])
     password = PasswordField('Password', validators=[DataRequired()])
@@ -43,3 +61,4 @@ class SuspectForm(FlaskForm):
     last_name = StringField('Suspect Last Name (If Known):', validators=None)
     gang = StringField('Suspect Gang Affiliation (If Known):', validators =None)
     status = SelectField('Status of suspect:', choices=['Unknown', 'Identified', 'In Custody', 'Released'])
+

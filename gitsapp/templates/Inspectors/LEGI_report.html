@@ -1,100 +1,163 @@
 {% extends "base.html" %}
 {% block content %}
 <title>Law Enforcement Graffiti Incident Entry </title> <!-- This is title of page tab -->
-<link href="{{url_for('static', filename='styles/ccie_style_sheet.css')}}" rel="stylesheet">
+<link href="{{url_for('static', filename='css/legi_style_sheet.css')}}" rel="stylesheet">
 <a class="btn btn-secondary" href="{{url_for('core.index')}}"> X</a>
 <div class="page_container">
 
 
     <form method=POST>
-        
-        <div class="column">
-            <!-- This is for the crew info -->
-            <div class="info_box">
-                <h1>Crew Information</h1>
-                <!-- This is the first column of input-->
-                <div class="column">
-                    <!-- <form method="POST"> -->
-                    {{report.first_name}} <br>
+        <div class="row">
+                <div class="col col-lg-6">
+                <!-- This is for the crew info -->
+                    <div class="info_box">
+                        <h1>Crew Information</h1>
+                        <div class="row">
+                            <div class="col col-lg-6">
+                                <p>crew first name</p>
 
-                    {{report.supervisor_fname}} <br>
+                                <p>supervisor first name</p>
+
+                                <p>crew id number</p>
+
+                                <p>clean up scale</p>
+                            </div>
+
+                            <div class="col col-lg-6">
+                                <p>crew last name</p>
+                                <p>supervisor lst name</p>
+                            
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                <p> </p>
+
+                    <div class="info_box5">
+                        <h1>Graffiti Information</h1>
+                        <div class="row">
+                            <div class="col col-lg-6">
+                                <form action="/action_page.php">
+                                    <label for="monkier">Monkier:</label><br>
+                                    <input type="text" id="monkier" name="monkier" value="Description of Graffiti Image"><br>
+                                </form>
+                                
+                                <form action="/action_page.php">
+                                    <label for="damage_amount">Amount of Cleanup:</label>
+                                    <select name="damage_amount" id="damage_amount">
+                                    <option value="Small">Small</option>
+                                    <option value="Moderate">Moderate</option>
+                                    <option value="Large">Large</option>
+                                    </select>
+                                    <br><br>
+                                </form>
+                            </div>
+                            <div class="col col-lg-6">
+                                <form action="/action_page.php">
+                                    <label for="invest_status">Investigation Status:</label>
+                                    <select name="invest_status" id="invest_status">
+                                    <option value="New">New</option>
+                                    <option value="In Progress">In progress</option>
+                                    <option value="In Litigation">In Litigation</option>
+                                    <option value="Resolved">Resolved</option>
+                                    </select>
+                                    <br><br>
+                                </form>
+                            </div>
+                        </div>
+                        
+                    </div>
+                <p></p>
+                
+                    <div class="info_box4">
+                        <h1>Suspect Information</h1>
+                        <div class="row">
+                            <div class="col col-lg-4">
+                                <form action="/action_page.php">
+                                    <label for="suspect_fname">Suspect First Name:</label><br>
+                                    <input type="text" id="suspect_fname" name="suspect_fname" value="Gon"><br>
+                                </form>
+
+                                <form action="/action_page.php">
+                                    <label for="gang_name">Gang or Crew Name:</label><br>
+                                    <input type="text" id="gang_name" name="gang_name" value="The Bad Guys"><br>
+                                </form>
+                            </div>
 
 
-                    {{report.crew_id}} <br>
+                            <div class="col col-lg-4">
+                                <form action="/action_page.php">
+                                    <label for="suspect_lname">Suspect Last Name:</label><br>
+                                    <input type="text" id="suspect_lname" name="suspect_lname" value="Freecss"><br>
+                                </form>
+
+                                <form action="/action_page.php">
+                                    <p>Click "Choose File" to upload picture of suspect</p>
+                                    <input type="file" id="myFile" name="filename">
+                                </form>
+                            </div>
 
 
-                    {{report.scale_of_cleanup}} <br>
-
-
-                    <!-- </form> -->
-                </div>
-                <!-- This is the second column of input-->
-                <div class="column">
-                    <!-- <form method="POST"> -->
-                    {{report.last_name}} <br>
+                            <div class="col col-lg-4">
+                                <form action="/action_page.php">
+                                    <p>Click to look up suspect:</p>
+                                    <button name="lookup" type="submit" value="lookup">Look Up Suspect</button>
+                                    <p></p>
+                                    <form action="/action_page.php">
+                                    <label for="sus_status">Suspect Status:</label>
+                                    <select name="sus_status" id="sus_status">
+                                    <option value="Unknown">Unknown</option>
+                                    <option value="Identified">Identified</option>
+                                    <option value="In Custody">In Custody</option>
+                                    <option value="Released">Released</option>
+                                    </select>
+                                    <br><br>
+                                </form>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     
-
-                    {{report.supervisor_lname}} <br>
-
-
-                    {{report.date_of_incident}} <br>
-                    <!-- </form> -->
-                </div>
+                <p></p>
             </div>
-            <p> </p>
-            <!-- This is for the incident report -->
-            <div class="info_box">
-                <h1>Incident Report</h1>
-                <!-- <form method="POST"> -->
-                {{report.type_of_building}}
-
-                <!-- </form> -->
-                <br><br>
-
-                <div class="column">
-                    <!-- <form method="POST"> -->
-                    {{report.street_address}}<br>
-
-
-                    {{report.zipcode}}<br>
-                </div>
-
-                <div class="column">
-                    <!-- <form method="POST"> -->
-                    {{report.cross_street}}<br>
-
-
-                    {{report.state}}
-                    <!-- </form> -->
-
-                </div>
-                <!-- <div id="map"></div> -->
-
-            </div>
-        </div>
-
-
-        <p></p>
-        <div class="column">
-            <!-- This is for the notes -->
-            <div class="info_box2">
-                <h1>Notes of the Incident</h1>
-                <label for="w3review"></label>
-                {{report.notes}}
-            </div>
-            <p></p>
-            <!-- TODO: FIX - Once we figure out how to upload files-->
-            <h3>Click on the "Choose File" button to upload a file:</h3>
-            <!-- <form method="POST"> -->
-            <input type="file" id="myFile" name="filename">
-
-            <!-- </form> -->
-        </div>
-        <br>
+        
         
 
-    </form>
+            <div class="col col-lg-6">
+                <div class="info_box3">
+                    <h1>Incident Report</h1>
+                    <div class="row">
+                        <div class="col col-lg-6">
+                            <p>building type</p>
+                            <p>street addr</p>
+                            <p>zipcode</p>
+                        </div>
 
+                        <div class="col col-lg-6">
+                            <p>cross street addr</p>
+                            <p>state</p>
+                        </div>
+                    </div>
+                </div>
+                <p> </p>
+                <!-- This is for the incident report -->
+                <div class="info_box2">
+                    <h1>Notes of the Incident</h1>
+                    <label for="w3review"></label>
+                </div>
+                <div class="submit_box">
+                    <h3>Click on the "Choose File" button to upload a file:</h3>
+                    <form action="/action_page.php">
+                        <input type="file" id="myFile" name="filename">
+                        <button name="Edit" type="submit" value="Edit">Edit File Name</button>
+                        <input type="submit">
+                    </form>
+                    </div>
+            </div>
+        </div>
+        <br>    
+    </form>
 </div>
 
 {% endblock %}

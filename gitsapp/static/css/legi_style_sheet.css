@@ -1,0 +1,107 @@
+body {
+    background: #c8dbe6d0;
+    margin: 35px 45px;
+}
+.info_box {
+    background: #ffffff;
+    width:800px;
+    height:250px;
+    padding: 10px;
+    padding-left: 30px;
+    margin-left: 10%;
+}
+.info_box2 {
+    background: #ffffff;
+    width:800px;
+    height:400px;
+    padding: 10px;
+    padding-left: 70px;
+}
+.info_box3 {
+    background: #ffffff;
+    width:800px;
+    height:200px;
+    padding: 10px;
+    padding-left: 70px;
+}
+.info_box4 {
+    background: #ffffff;
+    width:800px;
+    height:300px;
+    padding: 10px;
+    padding-left: 30px;
+    margin-left: 10%;
+}
+.info_box5 {
+    background: #ffffff;
+    width:800px;
+    height:225px;
+    padding: 10px;
+    padding-left: 30px;
+    margin-left: 10%;
+}
+.submit_box {
+    width:800px;
+    height:325px;
+    padding: 10px;
+    padding-left: 70px;
+}
+#info_box:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+#info_box2:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+#info_box3:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+#info_box4:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+#info_box5:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.column {
+    float: left;
+    width: 50%;
+}
+
+
+h1 {
+    font-family: "Arial", Helvetica, sans-serif;
+    
+}
+h3 {
+    font-family: "Arial", Helvetica, sans-serif;
+}
+
+.label {
+    margin-left: 10%;
+}
+input { 
+    margin-bottom: 20px; 
+}
+
+textarea {
+    resize: none;
+}
+/* #map {
+    height: 400px;
+    width: 100%;
+  } */
+.page_container:after {
+    content: "";
+    display: table;
+    clear: both;
+}
