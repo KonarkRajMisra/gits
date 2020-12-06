@@ -40,10 +40,6 @@ class Report(db.Model):
 
     
     id = db.Column(db.Integer, primary_key=True)
-    #connect report to the reporter's id
-    #reporter_id = db.Column(db.Integer, db.ForeignKey('reporters.id'), nullable=False)
-    
-    #TODO: connect all the reports to the inspector
     first_name=db.Column(db.String(64), nullable=False)
     last_name=db.Column(db.String(64), nullable=False)
     supervisor_fname = db.Column(db.String(64), nullable=False)

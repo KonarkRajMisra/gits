@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, logout_user 
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_googlemaps import Map
+from collections import Counter
 #inspector flow
 inspectors_users = Blueprint('inspectors_users', __name__)
 

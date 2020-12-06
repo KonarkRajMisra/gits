@@ -94,8 +94,7 @@ def ccie_report():
                         gps_lng = result[0].get("geometry").get("location").get("lng"),
                         cross_street = form.cross_street.data,
                         notes=form.notes.data,
-                        #is_hotspot=False
-                        #author_id=current_user.id),
+                        is_hotspot=False
         )
         db.session.add(report)
         db.session.commit()
