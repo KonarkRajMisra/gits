@@ -52,15 +52,13 @@ class LegiReportForm(FlaskForm):
     street_address = StringField('Address (No abbreviations):',validators=[DataRequired()])
     zipcode = IntegerField('Zipcode:',validators=[DataRequired()])
     cross_street = StringField('Cross Street (If known):', validators=None)
-<<<<<<< HEAD
     #TODO: gps_coordinates
     #TODO: images
     submit = SubmitField('Edit Report')
 
 class SearchForm(FlaskForm):
-  search = StringField('search', [DataRequired()])
-  submit = SubmitField('Search Report')
-=======
+    search = StringField('search', [DataRequired()])
+    submit = SubmitField('Search Report')
     cleanup = SelectField('Scale of Cleanup (Damage):', choices=['No Change', 'Small', 'Moderate', 'Large'])
     investigation_status = SelectField('Status of Investigation:', choices=['No Change', 'New', 'In Process', 'In litigation', 'Resolved'])
     new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
@@ -79,4 +77,3 @@ class SuspectForm(FlaskForm):
     sus_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
     submit = SubmitField('Create/Update Suspect')
 
->>>>>>> 9db8e1b72e93997b9ba8c8e948e595c608c6f851

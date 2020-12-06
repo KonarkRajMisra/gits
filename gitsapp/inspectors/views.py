@@ -1,15 +1,8 @@
-<<<<<<< HEAD
-from os import abort
-from gitsapp.models import User,Report
-from gitsapp.inspectors.forms import RegistrationForm,LoginForm,LegiReportForm, SearchForm
-from gitsapp import db, login_required
-=======
 import os
 from gitsapp.models import User,Report, Suspect, Suspect_Image, Report_Image
 from gitsapp.inspectors.forms import RegistrationForm,LoginForm, LegiReportForm, SuspectForm, SearchSuspectForm
 from gitsapp import db, login_required, app, gmap
 from werkzeug.utils import secure_filename
->>>>>>> 9db8e1b72e93997b9ba8c8e948e595c608c6f851
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, logout_user 
 from flask import render_template, url_for, flash, redirect, request, Blueprint
@@ -103,38 +96,7 @@ def toggle_hotspot(report_id):
 def signout_inspector():
     logout_user()
     return redirect(url_for('core.index'))
-
-#query all the reports created by the user, else give 403 unauth access
-# @inspectors_users.route('/reports',methods=['GET','POST'])
-# @login_required(role="LAW")
-# def reports(report_id):
-#     all_reports = Report.query.get_or_404(report_id)
-#     if all_reports.author != current_user:
-#         abort(403)
-            
-
-@inspectors_users.route('/inspector/gr/', methods=['GET'])
-@inspectors_users.route('/inspector/gr/<string:data>', methods=['GET'])
-@login_required(role="LAW")
-def graffiti_reporting(data=None):
-
-    urls = []
-    reports = []
-
-    if data != None:
         
-        for report in Report.query.all():
-            if report.has_keyword(data):
-                urls.append(url_for('inspectors_users.legi_report',report_id=report.id))
-                reports.append(report)
-
-
-
-    return render_template('inspectors/graffiti_reporting.html',report_links=urls, report_objs=reports)        
-
-
-
-
 
          
 @inspectors_users.route('/inspector/all_reports',methods=['GET'])
@@ -331,13 +293,12 @@ def graffiti_analysis():
 
         
     return render_template('inspectors/graffitianalysis.html',reports=reports, date_frequency= date_frequency, zip_frequency = zip_frequency,gps_range = gps_range,suspect_names = suspect_names,crew_ids = crew_ids)
-<<<<<<< HEAD
 
 
 
 
 @inspectors_users.route('/inspector/gr/', methods=['GET','POST'])
-@inspectors_users.route('/inspector/gr/<string:data>', methods=['GET','POST'])
+#@inspectors_users.route('/inspector/gr/<string:data>', methods=['GET','POST'])
 @login_required(role="LAW")
 def graffiti_reporting(data=None):
 
@@ -365,5 +326,3 @@ def status_report():
     total_incidents = len(reports)
     today = date.today()
     return render_template('inspectors/status_report.html',today=today,total_incidents=total_incidents,total_law_enforcements=total_law)
-=======
->>>>>>> 9db8e1b72e93997b9ba8c8e948e595c608c6f851
