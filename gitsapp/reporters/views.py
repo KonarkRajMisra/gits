@@ -1,7 +1,8 @@
-from os import abort
+import os
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user
-from gitsapp import db, login_required
+from gitsapp import db, login_required, app
+from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from gitsapp.models import User, Report
 from gitsapp.reporters.forms import RegistrationForm,LoginForm, CCIEReportForm
@@ -59,10 +60,20 @@ def dash():
 @reporters_users.route('/reporter/ccie',methods=['GET','POST'])
 @login_required(role="WORKER")
 def ccie_report():
-    form = CCIEReportForm(request.form)
+    form = CCIEReportForm()
     #if form submitted create a report
     if form.validate_on_submit():
 
+        #Save image
+        image = form.photo.data
+        filename=secure_filename(image.filename)
+        directory = os.path.join(app.instance_path, 'report_photos')
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        file_path = os.path.join(directory, filename)
+        image.save(file_path)
+
+        #Find GPS coordinates
         result = gmap.geocode(form.street_address.data)
         #basic check to make sure address matches state
         if(result[0].get("address_components")[5].get("long_name") != form.state.data):
@@ -84,8 +95,10 @@ def ccie_report():
                         state = form.state.data,
                         gps_lat = result[0].get("geometry").get("location").get("lat"),
                         gps_lng = result[0].get("geometry").get("location").get("lng"),
-                        cross_street = form.cross_street.data, 
-                        notes=form.notes.data
+                        cross_street = form.cross_street.data,
+                        image = file_path,
+                        notes=form.notes.data,
+                        is_hotspot=False
                         #author_id=current_user.id),
         )
         db.session.add(report)

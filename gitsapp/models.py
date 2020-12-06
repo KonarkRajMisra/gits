@@ -60,11 +60,17 @@ class Report(db.Model):
     #TODO: image
     gps_lat = db.Column(db.Float(2), nullable=False)
     gps_lng = db.Column(db.Float(2), nullable=False)
+    image = db.Column(db.String(256), nullable=True)
     notes = db.Column(db.String(256),nullable=True)
-
-        
-
-    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state,  gps_lat, gps_lng, notes=None, cross_street=None):
+    
+     #relationship to inspector
+    #connect report to the reporter's id
+    #one to many
+    #reporters = db.relationship(Reporter)
+    #author_id = db.Column(db.Integer, db.ForeignKey('reporters.id'),nullable=False)
+    #inspectors = db.relationship('Inspector',secondary=link,lazy='subquery',backref=db.backref('inspectors',lazy=True))
+    
+    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state,  gps_lat, gps_lng, image=None, notes=None, cross_street=None):
         self.first_name = first_name
         self.last_name = last_name
         self.supervisor_fname = supervisor_fname
@@ -80,6 +86,7 @@ class Report(db.Model):
         self.gps_lat = gps_lat
         self.gps_lng = gps_lng
         self.notes = notes
+        self.image = image
     
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
