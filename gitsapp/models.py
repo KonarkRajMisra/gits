@@ -83,7 +83,6 @@ class Report(db.Model):
         self.gps_lat = gps_lat
         self.gps_lng = gps_lng
         self.notes = notes
-        self.image = image
     
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
@@ -92,6 +91,10 @@ class Report_Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     path = db.Column(db.String(128), nullable=False)
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
+
+    def __init__(self, path, report_id):
+        self.path = path
+        self.report_id = report_id
 
 class Suspect_Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)

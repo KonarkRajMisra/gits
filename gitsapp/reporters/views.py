@@ -4,7 +4,7 @@ from flask_login import login_user, current_user, logout_user
 from gitsapp import db, login_required, app
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
-from gitsapp.models import User, Report
+from gitsapp.models import User, Report, Report_Image
 from gitsapp.reporters.forms import RegistrationForm,LoginForm, CCIEReportForm
 from gitsapp import gmap
 
@@ -61,15 +61,12 @@ def ccie_report():
     #if form submitted create a report
     if form.validate_on_submit():
 
-        #Save image
-        image = form.photo.data
-        filename=secure_filename(image.filename)
+        #Save images
+        img_list=[]
         directory = os.path.join(app.instance_path, 'report_photos')
         if not os.path.exists(directory):
             os.makedirs(directory)
-        file_path = os.path.join(directory, filename)
-        image.save(file_path)
-
+            
         #Find GPS coordinates
         result = gmap.geocode(form.street_address.data)
         #basic check to make sure address matches state
@@ -93,12 +90,23 @@ def ccie_report():
                         gps_lat = result[0].get("geometry").get("location").get("lat"),
                         gps_lng = result[0].get("geometry").get("location").get("lng"),
                         cross_street = form.cross_street.data,
-                        image = file_path,
                         notes=form.notes.data,
-                        is_hotspot=False
+                        #is_hotspot=False
                         #author_id=current_user.id),
         )
         db.session.add(report)
+        db.session.commit()
+
+        for image in form.photos.data:
+            filename=secure_filename(image.filename)   
+            file_path = os.path.join(directory, filename)
+            image.save(file_path)
+            rep_image = Report_Image(file_path, report.id)
+            db.session.add(rep_image)
+            db.session.commit()
+            img_list.append(rep_image)
+
+        report.images = img_list
         db.session.commit()
         return redirect(url_for('reporters_users.dash'))
 
