@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField,SubmitField
+from wtforms import StringField,PasswordField,SubmitField,SelectField
 from wtforms.validators import DataRequired,Email,EqualTo
 from wtforms import ValidationError
+from gitsapp.reporters.forms import building_choices
 
 from flask_login import current_user
 from gitsapp.models import User
@@ -26,4 +27,9 @@ class RegistrationForm(FlaskForm):
 
 #Form for LEGI report
 class LegiReportForm(FlaskForm):
-    pass
+    building_type = SelectField('Building Type:', choices=building_choices)
+    street_address = StringField('Address',validators=[DataRequired()])
+    cross_street = StringField('Cross Street (If known):', validators=None)
+    #TODO: gps_coordinates
+    #TODO: images
+    submit = SubmitField('Edit Report')

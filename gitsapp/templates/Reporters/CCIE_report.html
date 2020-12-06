@@ -1,114 +1,112 @@
-<!DOCTYPE html>
-{% block header %}
-    <title>City Crew Incident Entry </title> <!-- This is title of page tab -->
-    <link href="{{url_for('static', filename='styles/ccie_style_sheet.css')}}" rel="stylesheet">
-    <button type="button" onclick="window.open('', '_self', ''); window.close();">X</button>
-{% endblock %}
+{% extends "base.html" %}
+
+{% block content %}
+<title>City Crew Incident Entry </title> <!-- This is title of page tab -->
+<link href="{{url_for('static', filename='styles/ccie_style_sheet.css')}}" rel="stylesheet">
+<a class="btn btn-secondary" href="{{url_for('core.index')}}"> X</a>
+<div class="page_container">
 
 
-{% block body %}
-    <div class="page_container">
-        
-
-        <form method=POST>
-            {{form.hidden_tag()}}
-            <div class="column">
-                <!-- This is for the crew info -->
-                <div class="info_box">
-                    <h1>Crew Information</h1>
-                    <!-- This is the first column of input-->
-                    <div class="column">
-                        <!-- <form method="POST"> -->
-                            {{form.first_name.label}} <br>
-                            {{form.first_name()}}<br>
-    
-                            {{form.sup_fname.label}} <br>
-                            {{form.sup_fname()}}<br>   
-    
-                            {{form.crew.label}} <br>
-                            {{form.crew()}}<br>             
-    
-                            {{form.cleanup.label}} <br>
-                            {{form.cleanup()}}
-    
-    
-                            {{form.submit}}
-                        <!-- </form> -->
-                    </div>
-                    <!-- This is the second column of input-->
-                    <div class="column">
-                        <!-- <form method="POST"> -->
-                            {{form.last_name.label}} <br>
-                            {{form.last_name()}}<br>
-    
-                            {{form.sup_lname.label}} <br>
-                            {{form.sup_lname()}}<br>
-    
-                            {{form.date.label}} <br>
-                            {{form.date(type="date")}}
-                        <!-- </form> -->
-                    </div>
-                </div>
-                <p> </p>
-                <!-- This is for the incident report -->
-                <div class="info_box">
-                    <h1>Incident Report</h1>
+    <form method=POST>
+        {{form.hidden_tag()}}
+        <div class="column">
+            <!-- This is for the crew info -->
+            <div class="info_box">
+                <h1>Crew Information</h1>
+                <!-- This is the first column of input-->
+                <div class="column">
                     <!-- <form method="POST"> -->
-                        {{form.building_type.label}}
-                        {{form.building_type()}}
-    
-                    <!-- </form> -->
-                    <br><br>
-    
-                    <div class="column">
-                        <!-- <form method="POST"> -->
-                            {{form.street_address.label}}<br>
-                            {{form.street_address()}}<br>
-    
-                            {{form.city.label}}<br>
-                            {{form.city()}}<br>
-        
-                            {{form.zipcode.label}}<br>
-                            {{form.zipcode()}}<br>
-                    </div>
-    
-                    <div class="column">
-                        <!-- <form method="POST"> -->
-                            {{form.cross_street.label}}<br>
-                            {{form.cross_street()}}<br>
-    
-                            {{form.state.label}}
-                            {{form.state()}}
-                        <!-- </form> -->
-                        
-                    </div>
-                    <!-- <div id="map"></div> -->
-    
-                </div>
-            </div>
-    
-    
-            <p></p>
-            <div class="column">
-                <!-- This is for the notes -->
-                <div class="info_box2">
-                    <h1>Notes of the Incident</h1>
-                    <label for="w3review"></label>
-                    {{form.notes(rows="20", cols="65")}}
-                </div>
-                <p></p>
-                <!-- TODO: FIX - Once we figure out how to upload files-->
-                <h3>Click on the "Choose File" button to upload a file:</h3>
-                <!-- <form method="POST"> -->
-                    <input type="file" id="myFile" name="filename">
+                    {{form.first_name.label}} <br>
+                    {{form.first_name()}}<br>
+
+                    {{form.sup_fname.label}} <br>
+                    {{form.sup_fname()}}<br>
+
+                    {{form.crew.label}} <br>
+                    {{form.crew()}}<br>
+
+                    {{form.cleanup.label}} <br>
+                    {{form.cleanup()}}
+
+
                     
-                <!-- </form> -->
+                    <!-- </form> -->
+                </div>
+                <!-- This is the second column of input-->
+                <div class="column">
+                    <!-- <form method="POST"> -->
+                    {{form.last_name.label}} <br>
+                    {{form.last_name()}}<br>
+
+                    {{form.sup_lname.label}} <br>
+                    {{form.sup_lname()}}<br>
+
+                    {{form.date.label}} <br>
+                    {{form.date(type="date")}}
+                    <!-- </form> -->
+                </div>
             </div>
+            <p> </p>
+            <!-- This is for the incident report -->
+            <div class="info_box">
+                <h1>Incident Report</h1>
+                <!-- <form method="POST"> -->
+                {{form.building_type.label}}
+                {{form.building_type()}}
+
+                <!-- </form> -->
+                <br><br>
+
+                <div class="column">
+                    <!-- <form method="POST"> -->
+                    {{form.street_address.label}}<br>
+                    {{form.street_address()}}<br>
+
+                    {{form.city.label}}<br>
+                    {{form.city()}}<br>
+
+                    {{form.zipcode.label}}<br>
+                    {{form.zipcode()}}<br>
+                </div>
+
+                <div class="column">
+                    <!-- <form method="POST"> -->
+                    {{form.cross_street.label}}<br>
+                    {{form.cross_street()}}<br>
+
+                    {{form.state.label}}
+                    {{form.state()}}
+                    <!-- </form> -->
+
+                </div>
+                <!-- <div id="map"></div> -->
+
+            </div>
+        </div>
 
 
-        </form>
-        
+        <p></p>
+        <div class="column">
+            <!-- This is for the notes -->
+            <div class="info_box2">
+                <h1>Notes of the Incident</h1>
+                <label for="w3review"></label>
+                {{form.notes(rows="20", cols="65")}}
+            </div>
+            <p></p>
+            <!-- TODO: FIX - Once we figure out how to upload files-->
+            <h3>Click on the "Choose File" button to upload a file:</h3>
+            <!-- <form method="POST"> -->
+            <input type="file" id="myFile" name="filename">
+
+            <!-- </form> -->
+        </div>
+        <br>
+        {{form.submit}}
+
+    </form>
 
 
-    </div>
+
+</div>
 {% endblock %}

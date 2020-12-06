@@ -1,5 +1,5 @@
 from os import abort
-from gitsapp.models import User, Report
+from gitsapp.models import User,Report
 from gitsapp.inspectors.forms import RegistrationForm,LoginForm
 from gitsapp import db, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -31,15 +31,15 @@ def login_inspector():
             return redirect(url_for('inspectors_users.dash'))
         
 
-        return redirect (url_for('reporters_users.dash'))
-        
-
     form = LoginForm(request.form)
     if form.validate_on_submit():
         
         inspector = User.query.filter_by(email=form.email.data).first()
+
+        if(inspector.urole == "WORKER"):
+            form.email.errors.append("This is a City Worker account. Use the City Worker login to use this account")
         
-        if inspector and inspector.check_pwd(form.password.data):
+        elif inspector and inspector.check_pwd(form.password.data):
             login_user(inspector)
             return redirect(url_for('inspectors_users.dash'))
 
@@ -76,12 +76,6 @@ def signout_inspector():
     logout_user()
     return redirect(url_for('core.index'))
 
-@inspectors_users.route('/inspector/legi/<int:report_id>',methods=['GET','POST'])
-@login_required(role="LAW")
-def legi_report(report_id):
-    return redirect(url_for('core.index'))
-
-
 #query all the reports created by the user, else give 403 unauth access
 # @inspectors_users.route('/reports',methods=['GET','POST'])
 # @login_required(role="LAW")
@@ -115,3 +109,18 @@ def graffiti_reporting(data=None):
 
 
          
+@inspectors_users.route('/inspector/all_reports',methods=['GET'])
+@login_required(role="LAW")
+def all_reports():
+    reports = Report.query.order_by(Report.id).all()
+    return render_template('inspectors/all_reports.html',reports=reports)
+
+@inspectors_users.route('/inspector/legi/<int:report_id>',methods=['GET','POST'])
+@login_required(role="LAW")
+def legi_report(report_id):
+    report = Report.query.filter_by(id=report_id).first()
+    return render_template('inspectors/LEGI_report.html',report=report)
+
+
+
+            
