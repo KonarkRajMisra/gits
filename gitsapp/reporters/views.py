@@ -39,6 +39,9 @@ def login_reporter():
     if form.validate_on_submit():
         
         reporter = User.query.filter_by(email=form.email.data).first()
+
+        if(reporter.urole == "WORKER"):
+            form.email.errors.append("This is a Law Enforcement account. Use the Law Enforcement  login to use this account")
         
         if reporter and reporter.check_pwd(form.password.data):
             login_user(reporter)

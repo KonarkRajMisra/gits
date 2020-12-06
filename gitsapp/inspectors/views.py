@@ -36,8 +36,11 @@ def login_inspector():
     if form.validate_on_submit():
         
         inspector = User.query.filter_by(email=form.email.data).first()
+
+        if(inspector.urole == "WORKER"):
+            form.email.errors.append("This is a City Worker account. Use the City Worker login to use this account")
         
-        if inspector and inspector.check_pwd(form.password.data):
+        elif inspector and inspector.check_pwd(form.password.data):
             login_user(inspector)
             return redirect(url_for('inspectors_users.dash'))
 
@@ -54,21 +57,37 @@ def dash():
     pins = []
 
     for report in reports:
-        pin_info = {
-            "lat": report.gps_lat,
-            "lng": report.gps_lng,
-            #TODO Add link to LEGI form lnk: url_for('')
+        #TODO add this code onto Graffiti Analysis for hotspots 
+        if report.is_hotspot:
+            pin_info = {
+                'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                "lat": report.gps_lat,
+                "lng": report.gps_lng,
+                "infobox": 
+                '<a href="' + url_for('inspectors_users.legi_report', report_id=report.id) + '">LEGI Report</a> <form method="POST" id="hotspot"><a href="' + url_for('inspectors_users.toggle_hotspot', report_id = report.id) + '"' + "onclick=\"document.getElementById('hotspot').submit();\">Remove hotspot</a></form>"
+            }
 
-        }
-
+        else:
+             pin_info = {
+                 'icon': 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                "lat": report.gps_lat,
+                "lng": report.gps_lng,
+                "infobox": 
+                '<a href="' + url_for('inspectors_users.legi_report', report_id=report.id) + '">LEGI Report</a> <form method="POST" id="hotspot"><a href="' + url_for('inspectors_users.toggle_hotspot', report_id = report.id) + '"' + "onclick=\"document.getElementById('hotspot').submit();\">Make hotspot</a></form>"
+            }
         pins.append(pin_info)
 
     report_map = Map(identifier="reports_map", lat=39.8283, lng=-98.5795,marker=pins )
     
-    
-    
 
     return render_template('inspectors/inspector_dash.html', curr_user= current_user, pins=pins)
+
+@inspectors_users.route('/inspector/togglespot/<int:report_id>', methods=['GET','POST'])
+def toggle_hotspot(report_id):
+    report = Report.query.filter(Report.id == report_id)[0]
+    report.is_hotspot = not report.is_hotspot
+    db.session.commit()
+    return redirect(url_for('inspectors_users.dash'))
 
 @inspectors_users.route('/inspector/sign_out')
 @login_required(role="LAW")
@@ -76,6 +95,39 @@ def signout_inspector():
     logout_user()
     return redirect(url_for('core.index'))
 
+#query all the reports created by the user, else give 403 unauth access
+# @inspectors_users.route('/reports',methods=['GET','POST'])
+# @login_required(role="LAW")
+# def reports(report_id):
+#     all_reports = Report.query.get_or_404(report_id)
+#     if all_reports.author != current_user:
+#         abort(403)
+            
+
+@inspectors_users.route('/inspector/gr/', methods=['GET'])
+@inspectors_users.route('/inspector/gr/<string:data>', methods=['GET'])
+@login_required(role="LAW")
+def graffiti_reporting(data=None):
+
+    urls = []
+    reports = []
+
+    if data != None:
+        
+        for report in Report.query.all():
+            if report.has_keyword(data):
+                urls.append(url_for('inspectors_users.legi_report',report_id=report.id))
+                reports.append(report)
+
+
+
+    return render_template('inspectors/graffiti_reporting.html',report_links=urls, report_objs=reports)        
+
+
+
+
+
+         
 @inspectors_users.route('/inspector/all_reports',methods=['GET'])
 @login_required(role="LAW")
 def all_reports():

@@ -85,7 +85,7 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     email = StringField('Email',validators=[DataRequired(),Email()])
-    password = PasswordField('Password', validators=[DataRequired(), EqualTo('pass_confirm', message="Passwords must match!")])
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo('pass_confirm', message="Passwords must match!"), Length(6,24, "Password must be 6-24 characters long")])
     pass_confirm = PasswordField('Confirm Password', validators=[DataRequired()])
     submit = SubmitField('Register')
     
@@ -101,7 +101,8 @@ class CCIEReportForm(FlaskForm):
     sup_fname = StringField("Supervisor's First Name:", validators=[DataRequired()])
     sup_lname = StringField("Supervisor's Last Name:", validators=[DataRequired()])
     crew = StringField('Crew ID:', validators=[DataRequired(), Length(4, 4, "Crew ID must be 4 digits")])
-    date = DateField('Date of Incident',validators=[DataRequired()])
+    #needs to be empty for now
+    date = DateField('Date of Incident',validators=[DataRequired("Please enter a date in the correct format")])
     cleanup = SelectField('Scale of Cleanup:', choices=['Small', 'Moderate', 'Large'])
     building_type = SelectField('Building Type:', choices=building_choices)
     city = StringField('Name of City:', validators=[DataRequired()])

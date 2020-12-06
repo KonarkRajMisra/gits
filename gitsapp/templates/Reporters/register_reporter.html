@@ -20,6 +20,10 @@
                             <div class="input-group form-group">
                                 {{form.email(class_='form-control')}}
                             </div>
+
+                            {%if form.email.errors%}
+                                <ul class="errors">{% for error in form.email.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                            {% endif %}
                         </div>
                         
                         
@@ -32,6 +36,9 @@
                                 {{form.password(class_='form-control')}}
                             </div>
                             
+                            {%if form.password.errors%}
+                                <ul class="errors">{% for error in form.password.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                            {% endif %}
                         </div>
 
                         <div class="input-group form-group">

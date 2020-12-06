@@ -23,7 +23,10 @@
                     {{form.sup_fname(placeholder="Raymond")}}<br>
 
                     {{form.crew.label}} <br>
-                    {{form.crew(placeholder="####")}}<br>
+                    {{form.crew(placeholder="####")}}<<br>
+                    {%if form.crew.errors%}
+                    <ul class="errors">{% for error in form.crew.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
 
                     {{form.cleanup.label}} <br>
                     {{form.cleanup()}}
@@ -43,6 +46,9 @@
 
                     {{form.date.label}} <br>
                     {{form.date(type="date")}}
+                    {%if form.crew.errors%}
+                    <ul class="errors">{% for error in form.date.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
                     <!-- </form> -->
                 </div>
             </div>

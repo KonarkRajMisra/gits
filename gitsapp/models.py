@@ -32,9 +32,7 @@ class User(db.Model, UserMixin):
     
     def __repr__(self):
         return f"User's Email: {self.email}"
-
     
-
 class Report(db.Model):
     
     __tablename__ = 'report'
@@ -64,10 +62,11 @@ class Report(db.Model):
     notes = db.Column(db.String(256),nullable=True)
     investigation_status = db.Column(db.String(64), nullable=True)      
     images = db.relationship('Report_Image', backref='report', lazy=True)
+    is_hotspot = db.Column(db.Boolean,nullable=False)
 
     suspect = db.relationship('Suspect', backref=db.backref('report', lazy=True))
 
-    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state,  gps_lat, gps_lng, notes=None, cross_street=None):
+    def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state,  gps_lat, gps_lng, is_hotspot, image=None, notes=None, cross_street=None):
         self.first_name = first_name
         self.last_name = last_name
         self.supervisor_fname = supervisor_fname
@@ -83,6 +82,7 @@ class Report(db.Model):
         self.gps_lat = gps_lat
         self.gps_lng = gps_lng
         self.notes = notes
+        self.is_hotspot = is_hotspot
     
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
@@ -129,3 +129,11 @@ class Suspect(db.Model):
 
     def __repr__(self) -> str:
         return f"Name: {self.first_name}"
+    def has_keyword(self, keyword):
+        if (keyword in str.lower(self.first_name)) or (keyword in str.lower(self.last_name)) or (keyword in str.lower(self.supervisor_fname)) or (keyword in str.lower(self.supervisor_lname)) or (keyword in str.lower(str(self.crew_id))) or (keyword in str.lower(self.scale_of_cleanup)) or (keyword in str.lower(self.type_of_building)) or (keyword in str.lower(self.street_address)) or (keyword in str.lower(str(self.zipcode))) or (keyword in str.lower(self.state)) or (keyword in str.lower(self.cross_street)) or (keyword in str.lower(str(self.gps_lat))) or (keyword in str.lower(str(self.gps_lng))) or (keyword in str.lower(str(self.notes))):
+            return True
+
+        return False
+
+        
+

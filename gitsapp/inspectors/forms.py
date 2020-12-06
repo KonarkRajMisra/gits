@@ -2,6 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,SubmitField,SelectField,IntegerField, MultipleFileField
 from flask_wtf.file import FileAllowed
 from wtforms.validators import DataRequired,Email,EqualTo
+from wtforms import StringField,PasswordField,SubmitField,SelectField
+from wtforms.validators import DataRequired,Email,EqualTo, Length
 from wtforms import ValidationError
 from gitsapp.reporters.forms import building_choices
 
@@ -35,10 +37,9 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     email = StringField('Email',validators=[DataRequired(),Email()])
-    password = PasswordField('Password', validators=[DataRequired(), EqualTo('pass_confirm', message="Passwords must match!")])
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo('pass_confirm', message="Passwords must match!"), Length(6,24, "Password must be 6-24 characters long")])
     pass_confirm = PasswordField('Confirm Password', validators=[DataRequired()])
     submit = SubmitField('Register')
-    
     def validate_email(self,field):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError('User already exists. Please Log In.')
