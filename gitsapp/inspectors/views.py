@@ -7,6 +7,7 @@ from flask_login import login_user, current_user, logout_user
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_googlemaps import Map
 from collections import Counter
+from datetime import date
 #inspector flow
 inspectors_users = Blueprint('inspectors_users', __name__)
 
@@ -162,4 +163,14 @@ def graffiti_reporting(data=None):
                 reports.append(report)
 
     print(urls,reports)
-    return render_template('inspectors/graffiti_reporting.html',report_links=urls, report_objs=reports,form=form)
+    return render_template('inspectors/graffiti_reporting.html',links=urls, reports=reports,form=form)
+
+@inspectors_users.route('/inspector/status_report')
+@login_required(role="LAW")
+def status_report():
+    reports = Report.query.order_by(Report.id).all()
+    law_enforcers = User.query.filter_by(urole="LAW")
+    total_law = len(law_enforcers)
+    total_incidents = len(reports)
+    today = date.today()
+    return render_template('inspectors/status_report.html',today=today,total_incidents=total_incidents,total_law_enforcements=total_law)

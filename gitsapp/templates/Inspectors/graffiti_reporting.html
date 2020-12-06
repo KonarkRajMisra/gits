@@ -1,21 +1,47 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
-<form method="POST">
+<div class="container">
+  <form method="POST">
+    {{form.hidden_tag()}}
+    <div class="container">
+      <h3>Graffiti Reporting</h3>
 
-{{form.hidden_tag()}}
-<div>
-    {{form.search.label}}
-    {{form.search()}}
-    {{form.submit()}}
+      {{form.search()}} {{form.submit()}}
+      <a href="" class="btn btn-primary"> Status Report </a>
+    </div>
+  </form>
+  <br />
+
+  <div class="container">
+    <table class="table table-dark">
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Crew ID</th>
+        <th scope="col">Supervisor Name</th>
+        <th scope="col">Suspect Nmae</th>
+        <th scope="col">Image Label</th>
+        <th scope="col">Date of Incident</th>
+        <th scope="col">Reporting Area</th>
+        <th scope="col">GPS Coordinates</th>
+      </tr>
+
+      <tbody>
+        {% for report in reports %}
+        <tr>
+          <th scope="row"></th>
+          <td>{{report.crew_id}}</td>
+          <td>{{report.supervisor_fname + " " + report.supervisor_lname}}</td>
+          <td>{{report.first_name + " " + report.last_name }}</td>
+          <td>Image Label</td>
+          <td>{{report.date_of_incident}}</td>
+          <td>{{report.street_address}}</td>
+          <td>{{report.gps_lat, report.gps_lng}}</td>
+        </tr>
+
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
 </div>
-
-</form>
-<ol>
-    {%for link in report_links%}
-    <li><a href={{link}}>a</a></li>
-    {%endfor%}
-</ol>
-
 
 {% endblock %}

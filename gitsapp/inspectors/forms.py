@@ -36,4 +36,4 @@ class LegiReportForm(FlaskForm):
 
 class SearchForm(FlaskForm):
   search = StringField('search', [DataRequired()])
-  submit = SubmitField('Search')
+  submit = SubmitField('Search Report')
