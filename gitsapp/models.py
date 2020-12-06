@@ -127,5 +127,8 @@ class Suspect(db.Model):
 
     def __repr__(self) -> str:
         return f"Name: {self.first_name}"
+
+    
+
         
 
