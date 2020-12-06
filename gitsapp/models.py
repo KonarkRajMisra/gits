@@ -83,6 +83,7 @@ class Report(db.Model):
         self.gps_lat = gps_lat
         self.gps_lng = gps_lng
         self.notes = notes
+        self.image = image
     
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
