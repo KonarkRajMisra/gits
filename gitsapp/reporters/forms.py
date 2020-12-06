@@ -1,13 +1,13 @@
 from typing import Optional
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField,SubmitField,DateField, SelectField
+from wtforms import StringField,PasswordField,SubmitField,DateField, SelectField, MultipleFileField
 from wtforms.fields.core import IntegerField
 from wtforms.fields.simple import TextAreaField
+from flask_wtf.file import FileAllowed
 from wtforms.validators import DataRequired,Email,EqualTo,Optional, Length
 from wtforms import ValidationError
 from flask_login import current_user
 from gitsapp.models import User
-
 
 building_choices = [
     'Residential',
@@ -85,7 +85,7 @@ class LoginForm(FlaskForm):
 
 class RegistrationForm(FlaskForm):
     email = StringField('Email',validators=[DataRequired(),Email()])
-    password = PasswordField('Password', validators=[DataRequired(), EqualTo('pass_confirm', message="Passwords must match!")])
+    password = PasswordField('Password', validators=[DataRequired(), EqualTo('pass_confirm', message="Passwords must match!"), Length(6,24, "Password must be 6-24 characters long")])
     pass_confirm = PasswordField('Confirm Password', validators=[DataRequired()])
     submit = SubmitField('Register')
     
@@ -102,17 +102,18 @@ class CCIEReportForm(FlaskForm):
     sup_lname = StringField("Supervisor's Last Name:", validators=[DataRequired()])
     crew = StringField('Crew ID:', validators=[DataRequired(), Length(4, 4, "Crew ID must be 4 digits")])
     #needs to be empty for now
-    date = DateField('Date of Incident',validators=[DataRequired()])
+    date = DateField('Date of Incident',validators=[DataRequired("Please enter a date in the correct format")])
     cleanup = SelectField('Scale of Cleanup:', choices=['Small', 'Moderate', 'Large'])
     building_type = SelectField('Building Type:', choices=building_choices)
     city = StringField('Name of City:', validators=[DataRequired()])
     state = SelectField('State:', choices=state_choices)
-    street_address = StringField('Address',validators=[DataRequired()])
+    street_address = StringField('Address (No abreviations)',validators=[DataRequired()])
     cross_street = StringField('Cross Street (If known):', validators=None)
     zipcode = IntegerField('Zipcode',validators=[DataRequired()])
     notes = TextAreaField('Notes',validators=None)
     submit = SubmitField('Create Report')
+    photos = MultipleFileField('Upload Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
     
     
-    
+
         

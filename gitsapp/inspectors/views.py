@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 from os import abort
 from gitsapp.models import User,Report
 from gitsapp.inspectors.forms import RegistrationForm,LoginForm,LegiReportForm, SearchForm
 from gitsapp import db, login_required
+=======
+import os
+from gitsapp.models import User,Report, Suspect, Suspect_Image, Report_Image
+from gitsapp.inspectors.forms import RegistrationForm,LoginForm, LegiReportForm, SuspectForm, SearchSuspectForm
+from gitsapp import db, login_required, app, gmap
+from werkzeug.utils import secure_filename
+>>>>>>> 9db8e1b72e93997b9ba8c8e948e595c608c6f851
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, logout_user 
 from flask import render_template, url_for, flash, redirect, request, Blueprint
@@ -37,8 +45,11 @@ def login_inspector():
     if form.validate_on_submit():
         
         inspector = User.query.filter_by(email=form.email.data).first()
+
+        if(inspector.urole == "WORKER"):
+            form.email.errors.append("This is a City Worker account. Use the City Worker login to use this account")
         
-        if inspector and inspector.check_pwd(form.password.data):
+        elif inspector and inspector.check_pwd(form.password.data):
             login_user(inspector)
             return redirect(url_for('inspectors_users.dash'))
 
@@ -55,18 +66,37 @@ def dash():
     pins = []
 
     for report in reports:
-        pin_info = {
-            "lat": report.gps_lat,
-            "lng": report.gps_lng,
-            #TODO Add link to LEGI form lnk: url_for('')
+        #TODO add this code onto Graffiti Analysis for hotspots 
+        if report.is_hotspot:
+            pin_info = {
+                'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                "lat": report.gps_lat,
+                "lng": report.gps_lng,
+                "infobox": 
+                '<a href="' + url_for('inspectors_users.legi_report', report_id=report.id) + '">LEGI Report</a> <form method="POST" id="hotspot"><a href="' + url_for('inspectors_users.toggle_hotspot', report_id = report.id) + '"' + "onclick=\"document.getElementById('hotspot').submit();\">Remove hotspot</a></form>"
+            }
 
-        }
-
+        else:
+             pin_info = {
+                 'icon': 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                "lat": report.gps_lat,
+                "lng": report.gps_lng,
+                "infobox": 
+                '<a href="' + url_for('inspectors_users.legi_report', report_id=report.id) + '">LEGI Report</a> <form method="POST" id="hotspot"><a href="' + url_for('inspectors_users.toggle_hotspot', report_id = report.id) + '"' + "onclick=\"document.getElementById('hotspot').submit();\">Make hotspot</a></form>"
+            }
         pins.append(pin_info)
 
     report_map = Map(identifier="reports_map", lat=39.8283, lng=-98.5795,marker=pins )
     
+
     return render_template('inspectors/inspector_dash.html', curr_user= current_user, pins=pins)
+
+@inspectors_users.route('/inspector/togglespot/<int:report_id>', methods=['GET','POST'])
+def toggle_hotspot(report_id):
+    report = Report.query.filter(Report.id == report_id)[0]
+    report.is_hotspot = not report.is_hotspot
+    db.session.commit()
+    return redirect(url_for('inspectors_users.dash'))
 
 @inspectors_users.route('/inspector/sign_out')
 @login_required(role="LAW")
@@ -74,27 +104,187 @@ def signout_inspector():
     logout_user()
     return redirect(url_for('core.index'))
 
+#query all the reports created by the user, else give 403 unauth access
+# @inspectors_users.route('/reports',methods=['GET','POST'])
+# @login_required(role="LAW")
+# def reports(report_id):
+#     all_reports = Report.query.get_or_404(report_id)
+#     if all_reports.author != current_user:
+#         abort(403)
+            
+
+@inspectors_users.route('/inspector/gr/', methods=['GET'])
+@inspectors_users.route('/inspector/gr/<string:data>', methods=['GET'])
+@login_required(role="LAW")
+def graffiti_reporting(data=None):
+
+    urls = []
+    reports = []
+
+    if data != None:
+        
+        for report in Report.query.all():
+            if report.has_keyword(data):
+                urls.append(url_for('inspectors_users.legi_report',report_id=report.id))
+                reports.append(report)
+
+
+
+    return render_template('inspectors/graffiti_reporting.html',report_links=urls, report_objs=reports)        
+
+
+
+
+
+         
 @inspectors_users.route('/inspector/all_reports',methods=['GET'])
 @login_required(role="LAW")
 def all_reports():
     reports = Report.query.order_by(Report.id).all()
     return render_template('inspectors/all_reports.html',reports=reports)
 
-@inspectors_users.route('/inspector/legi/<int:report_id>',methods=['GET','POST'])
-@login_required(role="LAW")
-def legi_report(report_id):
-    report = Report.query.filter_by(id=report_id).first()
-    report_update_form = LegiReportForm()
-    print(report_update_form.errors)
-    print(report_update_form.validate_on_submit())
-    if report_update_form.validate_on_submit():
-        report.type_of_building = report_update_form.building_type.data
-        report.street_address = report_update_form.street_address.data
-        report.cross_street = report_update_form.cross_street.data
-        db.session.commit()
-        return redirect(url_for('inspectors_users.all_reports'))
-    return render_template('inspectors/LEGI_report.html',report=report,form=report_update_form)
 
+@inspectors_users.route('/inspector/legi/<int:report_id>',methods=['GET','POST'])
+@inspectors_users.route('/inspector/legi/<int:report_id>/deletepic/<int:del_pic_id>', methods=['DELETE'])
+@inspectors_users.route('/inspector/legi/<int:report_id>/editpic/<int:edit_pic_id>/<string:new_name>', methods=['POST'])
+@login_required(role="LAW")
+def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
+    
+    legi_form = LegiReportForm()
+    found = None
+    search_form = SearchSuspectForm()
+    sus_form = SuspectForm()
+    
+    report = Report.query.filter_by(id=report_id).first()
+    suspect = None
+
+    #If suspect is already attached
+    if len(report.suspect) != 0:
+        found = True
+        suspect = report.suspect[0]
+
+    if search_form.validate_on_submit() and suspect == None:
+        #Search suspect to autofill
+        if search_form.first_name.data and search_form.last_name.data:
+            for search_suspect in Suspect.query.all():
+                if search_suspect.first_name == search_form.first_name.data and search_suspect.last_name == search_form.last_name.data:
+                    suspect = search_suspect
+                    found = True
+                    report.suspect.append(suspect)
+                    db.session.commit()
+                    break
+            
+            if suspect == None:
+                suspect = Suspect(search_form.first_name.data, search_form.last_name.data)
+                db.session.add(suspect)
+                db.session.commit()
+                report.suspect.append(suspect)
+                db.session.commit()
+                found=False
+
+    elif sus_form.validate_on_submit():
+        # if(suspect == None):
+            # suspect = Suspect(sus_form.first_name.data, sus_form.last_name.data, sus_form.gang.data, sus_form.status.data if sus_form.status.data != "No Change" else "Unknown")
+
+            # report.suspect = [suspect]
+
+
+                
+            # db.session.add(suspect)
+            # db.session.commit()
+            # found=True
+            # img_list=[]
+
+            # try:
+            #     for image in sus_form.sus_photos.data:
+            #         filename=secure_filename(image.filename)
+            #         file_path = os.path.join(directory, filename)
+            #         image.save(file_path)
+            #         sus_image = Suspect_Image(file_path, suspect.id, filename)
+            #         db.session.add(sus_image)
+            #         db.session.commit()
+            #         suspect.images.append(sus_image)
+            #         db.session.commit()
+            
+            # except:
+            #     pass
+        
+
+        directory = os.path.join(app.config['STATIC'], 'sus_photos')
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        suspect.first_name = sus_form.first_name.data if sus_form.first_name.data != None else suspect.first_name
+
+        suspect.last_name = sus_form.last_name.data if sus_form.last_name != None else suspect.last_name
+
+        suspect.gang = sus_form.gang.data if sus_form.gang.data != None else suspect.gang
+
+        suspect.status = sus_form.status.data if sus_form.status.data != "No Change" else suspect.status
+
+        db.session.commit()
+
+        try:
+            for image in sus_form.sus_photos.data:
+                filename=secure_filename(image.filename)
+                file_path = os.path.join(directory, filename)
+                image.save(file_path)
+                sus_image = Suspect_Image(file_path, suspect.id, filename)
+                db.session.add(sus_image)
+                db.session.commit()
+                suspect.images.append(sus_image)
+                db.session.commit()
+        
+        except:
+            pass
+      
+    elif legi_form.validate_on_submit():
+        #Find GPS coordinates
+        result = gmap.geocode(legi_form.street_address.data)
+        #basic check to make sure address matches state
+        try:
+            report.gps_lat = result[0].get("geometry").get("location").get("lat")
+            report.gps_lng = result[0].get("geometry").get("location").get("lng")        
+        except:
+            legi_form.street_address.errors.append('Invalid Address')
+            return render_template('inspectors/LEGI_report.html',report=report, suspect=suspect, sus_form=sus_form, legi_form=legi_form, search_form=search_form, found=found, image_list=report.images)
+        report.street_address = legi_form.street_address.data
+        report.zipcode = legi_form.zipcode.data
+        report.moniker = legi_form.moniker.data
+        report.cross_street = legi_form.cross_street.data
+        
+        if legi_form.type_of_building.data != "No Change": 
+            report.type_of_building = legi_form.type_of_building.data
+
+        if legi_form.investigation_status.data != "No Change":
+            report.investigation_status = legi_form.investigation_status.data
+
+        if legi_form.cleanup.data != "No Change":    
+            report.scale_of_cleanup = legi_form.cleanup.data
+
+        db.session.commit()
+        #Adding images
+        try:
+            directory = os.path.join(app.config['STATIC'], 'report_photos')
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
+            for image in legi_form.new_photos.data:
+                filename=secure_filename(image.filename)
+
+                file_path = os.path.join(directory, filename)
+                image.save(file_path)
+                rep_image = Report_Image(file_path, report.id, filename)
+                db.session.add(rep_image)
+                db.session.commit()
+                report.images.append(rep_image)
+                db.session.commit()
+        except:
+            return redirect(url_for('inspectors_users.all_reports'))
+
+        return redirect(url_for('inspectors_users.all_reports'))
+
+    return render_template('inspectors/LEGI_report.html',report=report, suspect=suspect, sus_form=sus_form, legi_form=legi_form, search_form=search_form, found=found, image_list=report.images, sus_image_list= suspect.images if suspect != None else None)
 
 @inspectors_users.route('/inspector/graffiti_analysis', methods=['GET'])
 @login_required(role="LAW")
@@ -141,6 +331,7 @@ def graffiti_analysis():
 
         
     return render_template('inspectors/graffitianalysis.html',reports=reports, date_frequency= date_frequency, zip_frequency = zip_frequency,gps_range = gps_range,suspect_names = suspect_names,crew_ids = crew_ids)
+<<<<<<< HEAD
 
 
 
@@ -174,3 +365,5 @@ def status_report():
     total_incidents = len(reports)
     today = date.today()
     return render_template('inspectors/status_report.html',today=today,total_incidents=total_incidents,total_law_enforcements=total_law)
+=======
+>>>>>>> 9db8e1b72e93997b9ba8c8e948e595c608c6f851
