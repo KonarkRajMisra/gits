@@ -2,7 +2,7 @@
 {% block content %}
 
 <div class="jumbotron">
-    <h1>Welcome Reporter {{current_user.email}}</h1>
+    <h1>Welcome {{current_user.email}}</h1>
     <a href="{{url_for('reporters_users.ccie_report')}}" class="btn btn-outline-primary"> 
         Create Report
     </a>
