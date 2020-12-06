@@ -82,6 +82,12 @@ class Report(db.Model):
     
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
+
+    def has_keyword(self, keyword):
+        if (keyword in str.lower(self.first_name)) or (keyword in str.lower(self.last_name)) or (keyword in str.lower(self.supervisor_fname)) or (keyword in str.lower(self.supervisor_lname)) or (keyword in str.lower(str(self.crew_id))) or (keyword in str.lower(self.scale_of_cleanup)) or (keyword in str.lower(self.type_of_building)) or (keyword in str.lower(self.street_address)) or (keyword in str.lower(str(self.zipcode))) or (keyword in str.lower(self.state)) or (keyword in str.lower(self.cross_street)) or (keyword in str.lower(str(self.gps_lat))) or (keyword in str.lower(str(self.gps_lng))) or (keyword in str.lower(str(self.notes))):
+            return True
+
+        return False
     
 class Report_Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -125,11 +131,8 @@ class Suspect(db.Model):
 
     def __repr__(self) -> str:
         return f"Name: {self.first_name}"
-    def has_keyword(self, keyword):
-        if (keyword in str.lower(self.first_name)) or (keyword in str.lower(self.last_name)) or (keyword in str.lower(self.supervisor_fname)) or (keyword in str.lower(self.supervisor_lname)) or (keyword in str.lower(str(self.crew_id))) or (keyword in str.lower(self.scale_of_cleanup)) or (keyword in str.lower(self.type_of_building)) or (keyword in str.lower(self.street_address)) or (keyword in str.lower(str(self.zipcode))) or (keyword in str.lower(self.state)) or (keyword in str.lower(self.cross_street)) or (keyword in str.lower(str(self.gps_lat))) or (keyword in str.lower(str(self.gps_lng))) or (keyword in str.lower(str(self.notes))):
-            return True
 
-        return False
+    
 
         
 
