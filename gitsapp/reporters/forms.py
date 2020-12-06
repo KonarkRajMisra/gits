@@ -1,9 +1,9 @@
 from typing import Optional
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField,SubmitField,DateField, SelectField
+from wtforms import StringField,PasswordField,SubmitField,DateField, SelectField, MultipleFileField
 from wtforms.fields.core import IntegerField
 from wtforms.fields.simple import TextAreaField
-from flask_wtf.file import FileField, FileAllowed
+from flask_wtf.file import FileAllowed
 from wtforms.validators import DataRequired,Email,EqualTo,Optional, Length
 from wtforms import ValidationError
 from flask_login import current_user
@@ -107,13 +107,13 @@ class CCIEReportForm(FlaskForm):
     building_type = SelectField('Building Type:', choices=building_choices)
     city = StringField('Name of City:', validators=[DataRequired()])
     state = SelectField('State:', choices=state_choices)
-    street_address = StringField('Address',validators=[DataRequired()])
+    street_address = StringField('Address (No abreviations)',validators=[DataRequired()])
     cross_street = StringField('Cross Street (If known):', validators=None)
     zipcode = IntegerField('Zipcode',validators=[DataRequired()])
     notes = TextAreaField('Notes',validators=None)
     submit = SubmitField('Create Report')
-    photo = FileField('Upload Photo', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
+    photos = MultipleFileField('Upload Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
     
     
-    
+
         

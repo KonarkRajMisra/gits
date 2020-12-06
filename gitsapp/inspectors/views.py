@@ -1,7 +1,8 @@
-from os import abort
-from gitsapp.models import User,Report
-from gitsapp.inspectors.forms import RegistrationForm,LoginForm
-from gitsapp import db, login_required
+import os
+from gitsapp.models import User,Report, Suspect, Suspect_Image, Report_Image
+from gitsapp.inspectors.forms import RegistrationForm,LoginForm, LegiReportForm, SuspectForm, SearchSuspectForm
+from gitsapp import db, login_required, app, gmap
+from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, logout_user 
 from flask import render_template, url_for, flash, redirect, request, Blueprint
@@ -53,7 +54,7 @@ def login_inspector():
 def dash():
 
     reports = Report.query.all()
-    pins = [];
+    pins = []
 
     for report in reports:
         #TODO add this code onto Graffiti Analysis for hotspots 
@@ -133,12 +134,149 @@ def all_reports():
     reports = Report.query.order_by(Report.id).all()
     return render_template('inspectors/all_reports.html',reports=reports)
 
+
 @inspectors_users.route('/inspector/legi/<int:report_id>',methods=['GET','POST'])
+@inspectors_users.route('/inspector/legi/<int:report_id>/deletepic/<int:del_pic_id>', methods=['DELETE'])
+@inspectors_users.route('/inspector/legi/<int:report_id>/editpic/<int:edit_pic_id>/<string:new_name>', methods=['POST'])
 @login_required(role="LAW")
-def legi_report(report_id):
+def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
+    
+    legi_form = LegiReportForm()
+    found = None
+    search_form = SearchSuspectForm()
+    sus_form = SuspectForm()
+    
     report = Report.query.filter_by(id=report_id).first()
-    return render_template('inspectors/LEGI_report.html',report=report)
+    suspect = None
 
+    #If suspect is already attached
+    if len(report.suspect) != 0:
+        found = True
+        suspect = report.suspect[0]
 
-
+    if search_form.validate_on_submit() and suspect == None:
+        #Search suspect to autofill
+        if search_form.first_name.data and search_form.last_name.data:
+            for search_suspect in Suspect.query.all():
+                if search_suspect.first_name == search_form.first_name.data and search_suspect.last_name == search_form.last_name.data:
+                    suspect = search_suspect
+                    found = True
+                    report.suspect.append(suspect)
+                    db.session.commit()
+                    break
             
+            if suspect == None:
+                suspect = Suspect(search_form.first_name.data, search_form.last_name.data)
+                db.session.add(suspect)
+                db.session.commit()
+                report.suspect.append(suspect)
+                db.session.commit()
+                found=False
+
+    elif sus_form.validate_on_submit():
+        # if(suspect == None):
+            # suspect = Suspect(sus_form.first_name.data, sus_form.last_name.data, sus_form.gang.data, sus_form.status.data if sus_form.status.data != "No Change" else "Unknown")
+
+            # report.suspect = [suspect]
+
+
+                
+            # db.session.add(suspect)
+            # db.session.commit()
+            # found=True
+            # img_list=[]
+
+            # try:
+            #     for image in sus_form.sus_photos.data:
+            #         filename=secure_filename(image.filename)
+            #         file_path = os.path.join(directory, filename)
+            #         image.save(file_path)
+            #         sus_image = Suspect_Image(file_path, suspect.id, filename)
+            #         db.session.add(sus_image)
+            #         db.session.commit()
+            #         suspect.images.append(sus_image)
+            #         db.session.commit()
+            
+            # except:
+            #     pass
+        
+
+        directory = os.path.join(app.config['STATIC'], 'sus_photos')
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        suspect.first_name = sus_form.first_name.data if sus_form.first_name.data != None else suspect.first_name
+
+        suspect.last_name = sus_form.last_name.data if sus_form.last_name != None else suspect.last_name
+
+        suspect.gang = sus_form.gang.data if sus_form.gang.data != None else suspect.gang
+
+        suspect.status = sus_form.status.data if sus_form.status.data != "No Change" else suspect.status
+
+        db.session.commit()
+
+        try:
+            for image in sus_form.sus_photos.data:
+                filename=secure_filename(image.filename)
+                file_path = os.path.join(directory, filename)
+                image.save(file_path)
+                sus_image = Suspect_Image(file_path, suspect.id, filename)
+                db.session.add(sus_image)
+                db.session.commit()
+                suspect.images.append(sus_image)
+                db.session.commit()
+        
+        except:
+            pass
+      
+
+    
+
+    
+    elif legi_form.validate_on_submit():
+        #Find GPS coordinates
+        result = gmap.geocode(legi_form.street_address.data)
+        #basic check to make sure address matches state
+        try:
+            report.gps_lat = result[0].get("geometry").get("location").get("lat")
+            report.gps_lng = result[0].get("geometry").get("location").get("lng")        
+        except:
+            legi_form.street_address.errors.append('Invalid Address')
+            return render_template('inspectors/LEGI_report.html',report=report, suspect=suspect, sus_form=sus_form, legi_form=legi_form, search_form=search_form, found=found, image_list=report.images)
+        report.street_address = legi_form.street_address.data
+        report.zipcode = legi_form.zipcode.data
+        report.moniker = legi_form.moniker.data
+        report.cross_street = legi_form.cross_street.data
+        
+        if legi_form.type_of_building.data != "No Change": 
+            report.type_of_building = legi_form.type_of_building.data
+
+        if legi_form.investigation_status.data != "No Change":
+            report.investigation_status = legi_form.investigation_status.data
+
+        if legi_form.cleanup.data != "No Change":    
+            report.scale_of_cleanup = legi_form.cleanup.data
+
+        db.session.commit()
+        #Adding images
+        try:
+            directory = os.path.join(app.config['STATIC'], 'report_photos')
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+
+            for image in legi_form.new_photos.data:
+                filename=secure_filename(image.filename)
+
+                file_path = os.path.join(directory, filename)
+                image.save(file_path)
+                rep_image = Report_Image(file_path, report.id, filename)
+                db.session.add(rep_image)
+                db.session.commit()
+                report.images.append(rep_image)
+                db.session.commit()
+        except:
+            return redirect(url_for('inspectors_users.all_reports'))
+
+        return redirect(url_for('inspectors_users.all_reports'))
+
+    return render_template('inspectors/LEGI_report.html',report=report, suspect=suspect, sus_form=sus_form, legi_form=legi_form, search_form=search_form, found=found, image_list=report.images, sus_image_list= suspect.images if suspect != None else None)

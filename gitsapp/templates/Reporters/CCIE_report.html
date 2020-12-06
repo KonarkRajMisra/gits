@@ -1,17 +1,13 @@
 {% extends "base.html" %}
 
-{% block head %}
-<link href="{{url_for('static', filename='styles/ccie_style_sheet.css')}}" rel="stylesheet">
-{% endblock %}
-
-
 {% block content %}
 <title>City Crew Incident Entry </title> <!-- This is title of page tab -->
-<a class="btn btn-secondary" href="{{url_for('reporters_users.dash')}}"> X</a>
+<link href="{{url_for('static', filename='css/ccie_style_sheet.css')}}" rel="stylesheet">
+<a class="btn btn-secondary" href="{{url_for('core.index')}}"> X</a>
 <div class="page_container">
 
 
-    <form method=POST>
+    <form method=POST enctype="multipart/form-data">
         {{form.hidden_tag()}}
         <div class="column">
             <!-- This is for the crew info -->
@@ -21,13 +17,13 @@
                 <div class="column">
                     <!-- <form method="POST"> -->
                     {{form.first_name.label}} <br>
-                    {{form.first_name()}}<br>
+                    {{form.first_name(placeholder="Alex")}}<br>
 
                     {{form.sup_fname.label}} <br>
-                    {{form.sup_fname()}}<br>
+                    {{form.sup_fname(placeholder="Raymond")}}<br>
 
                     {{form.crew.label}} <br>
-                    {{form.crew()}}<br>
+                    {{form.crew(placeholder="####")}}<<br>
                     {%if form.crew.errors%}
                     <ul class="errors">{% for error in form.crew.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
                     {% endif %}
@@ -36,17 +32,17 @@
                     {{form.cleanup()}}
 
 
-                    
+                    {{form.submit}}
                     <!-- </form> -->
                 </div>
                 <!-- This is the second column of input-->
                 <div class="column">
                     <!-- <form method="POST"> -->
                     {{form.last_name.label}} <br>
-                    {{form.last_name()}}<br>
+                    {{form.last_name(placeholder="Doe")}}<br>
 
                     {{form.sup_lname.label}} <br>
-                    {{form.sup_lname()}}<br>
+                    {{form.sup_lname(placeholder="Madachy")}}<br>
 
                     {{form.date.label}} <br>
                     {{form.date(type="date")}}
@@ -56,40 +52,33 @@
                     <!-- </form> -->
                 </div>
             </div>
-    
-    
-            <p></p>
-            <div class="column">
-                <!-- This is for the notes -->
-                <div class="info_box2">
-                    <h1>Notes of the Incident</h1>
-                    <label for="w3review"></label>
-                    {{form.notes(rows="20", cols="65")}}
-                </div>
-                <p></p>
-                <h3>Click on the "Choose File" button to upload a file:</h3>
+            <p> </p>
+            <!-- This is for the incident report -->
+            <div class="info_box">
+                <h1>Incident Report</h1>
                 <!-- <form method="POST"> -->
-                {{form.photo()}}
-                    
+                {{form.building_type.label}}
+                {{form.building_type()}}
+
                 <!-- </form> -->
                 <br><br>
 
                 <div class="column">
                     <!-- <form method="POST"> -->
                     {{form.street_address.label}}<br>
-                    {{form.street_address()}}<br>
+                    {{form.street_address(placeholder="5500 Campanile Drive")}}<br>
 
                     {{form.city.label}}<br>
-                    {{form.city()}}<br>
+                    {{form.city(placeholder="San Diego")}}<br>
 
                     {{form.zipcode.label}}<br>
-                    {{form.zipcode()}}<br>
+                    {{form.zipcode(placeholder="92182")}}<br>
                 </div>
 
                 <div class="column">
                     <!-- <form method="POST"> -->
                     {{form.cross_street.label}}<br>
-                    {{form.cross_street()}}<br>
+                    {{form.cross_street(placeholder="6075 Aztec Circle Drive")}}<br>
 
                     {{form.state.label}}
                     {{form.state()}}
@@ -110,16 +99,12 @@
                 <label for="w3review"></label>
                 {{form.notes(rows="20", cols="65")}}
             </div>
-            <p></p>
-            <!-- TODO: FIX - Once we figure out how to upload files-->
-            <h3>Click on the "Choose File" button to upload a file:</h3>
-            <!-- <form method="POST"> -->
-            <input type="file" id="myFile" name="filename">
 
-            <!-- </form> -->
+            <h3>Click on the "Choose File" button to upload a file:</h3>
+            {{form.photos()}}
+
         </div>
-        <br>
-        {{form.submit}}
+
 
     </form>
 
