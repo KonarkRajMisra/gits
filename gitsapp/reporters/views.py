@@ -39,6 +39,9 @@ def login_reporter():
     if form.validate_on_submit():
         
         reporter = User.query.filter_by(email=form.email.data).first()
+
+        if(reporter.urole == "WORKER"):
+            form.email.errors.append("This is a Law Enforcement account. Use the Law Enforcement  login to use this account")
         
         if reporter and reporter.check_pwd(form.password.data):
             login_user(reporter)
@@ -74,8 +77,8 @@ def ccie_report():
         result = gmap.geocode(form.street_address.data)
         #basic check to make sure address matches state
         if(result[0].get("address_components")[5].get("long_name") != form.state.data):
-            form.errors.append('Invalid state')
-            return render_tempalte('Reporters/CCIE_report.html', form=form)
+            form.state.errors.append('Invalid state')
+            return render_template('Reporters/CCIE_report.html', form=form)
 
         
         report = Report(
@@ -100,13 +103,15 @@ def ccie_report():
         )
         db.session.add(report)
         db.session.commit()
-        return redirect(url_for('reporters_users.dash'))
-
-    
-    print(form.errors)
+        return redirect(url_for('reporters_users.dash')) 
     #otherwise show the form
     return render_template('Reporters/CCIE_report.html',form=form)
 
+@reporters_users.route('/reporter/sign_out')
+@login_required(role="WORKER")
+def signout_reporter():
+    logout_user()
+    return redirect(url_for('core.index'))
 
 #query all the reports created by the user, else give 403 unauth access
 @reporters_users.route('/reporter/reports',methods=['GET','POST'])
@@ -115,9 +120,3 @@ def reports(report_id):
     report = Report.query.get_or_404(report_id)
     return render_template('reports.html',report=report)
             
-
-@reporters_users.route('/reporter/sign_out')
-@login_required(role="WORKER")
-def signout_reporter():
-    logout_user()
-    return redirect(url_for('core.index'))

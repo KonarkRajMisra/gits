@@ -1,31 +1,65 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container">
-    <div class="jumbotron">
+<div class="jumbotron">
+    
 
-        <h1>City Workers</h1>
-        <button type="button" class="btn btn-success"> 
-            <a href="{{url_for('reporters_users.register_reporter')}}">Sign Up </a>
+        <div class="row">
             
-        </button>
-        <button type="button" class="btn btn-primary">
-            <a href="{{url_for('reporters_users.login_reporter')}}">Log In </a>
-            
-        </button>
+            <aside class="col-sm-6">
+                <div class="card">
+                    <article class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <h4>City Workers</h4>
+                                <div class="form-group">
+                                    <a class="btn btn-success btn-block"
+                                        href="{{url_for('reporters_users.register_reporter')}}">Sign Up</a>
+                                </div>
+
+                                <div class="form-group">
+                                    <a class="btn btn-primary btn-block"
+                                        href="{{url_for('reporters_users.login_reporter')}}">Log In </a>
+                                </div>
+                            </div>
+                        </form>
+                    </article>
+                </div>
+            </aside>
+
+            <aside class="col-sm-6">
+                <div class="card">
+                    <article class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <h4>Law Enforcement</h4>
+                                <div class="form-group">
+
+                                    <a class="btn btn-success btn-block"
+                                        href="{{url_for('inspectors_users.register_inspector')}}">Sign Up </a>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <a class="btn btn-primary btn-block"
+                                        href="{{url_for('inspectors_users.login_inspector')}}">Log In </a>
+                                </div>
 
 
-        <h1>Law Enforcement</h1>
-        <button type="button" class="btn btn-success"> 
-            <a href="{{url_for('inspectors_users.register_inspector')}}">Sign Up </a>
-            
-        </button>
-        <button type="button" class="btn btn-primary">
-            <a href="{{url_for('inspectors_users.login_inspector')}}">Log In </a>
-            
-        </button>
 
-    </div>
+                            </div>
+
+                        </form>
+
+                    </article>
+            </aside>
+
+
+        </div>
+
+
+
+    
 </div>
 
 {% endblock %}
