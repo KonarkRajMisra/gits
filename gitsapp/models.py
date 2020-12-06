@@ -63,7 +63,7 @@ class Report(db.Model):
     gps_lng = db.Column(db.Float(2), nullable=False)
     notes = db.Column(db.String(256),nullable=True)
     investigation_status = db.Column(db.String(64), nullable=True)      
-    images = db.relationship('Image', backref='report', lazy=True)
+    images = db.relationship('Report_Image', backref='report', lazy=True)
 
     suspect = db.relationship('Suspect', backref=db.backref('report', lazy=True))
 
@@ -87,9 +87,15 @@ class Report(db.Model):
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
     
-class Image(db.Model):
+class Report_Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     path = db.Column(db.String(128), nullable=False)
+    report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
+
+class Suspect_Image(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    path = db.Column(db.String(128), nullable=False)
+    suspect_id = db.Column(db.Integer, db.ForeignKey('suspect.id'))
 
 class Suspect(db.Model):
 
@@ -98,14 +104,15 @@ class Suspect(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(64), nullable=False)
     last_name = db.Column(db.String(64), nullable=False)
-    gang_affil = db.Column(db.String(128), nullable=True)
+    gang = db.Column(db.String(128), nullable=True)
     status = db.Column(db.String(64), nullable=True)
-    images = db.relationship('Image', backref='suspect', lazy=True)
+    images = db.relationship('Suspect_Image', backref='suspect', lazy=True)
+    report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
 
     def __init__(self, first_name, last_name, gang, status):
         self.first_name = first_name
         self.last_name = last_name
-        self.gang_affil = gang
+        self.gang = gang
         self.status = status
 
     def __repr__(self) -> str:

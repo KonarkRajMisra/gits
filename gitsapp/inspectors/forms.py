@@ -48,17 +48,24 @@ class RegistrationForm(FlaskForm):
 class LegiReportForm(FlaskForm):
     building_type = SelectField('Building Type:', choices=building_choices)
     moniker = StringField('Moniker (If known):', validators=None)
-    street_address = StringField('Address:',validators=[DataRequired()])
+    street_address = StringField('Address (No abbreviations):',validators=[DataRequired()])
     zipcode = IntegerField('Zipcode:',validators=[DataRequired()])
     cross_street = StringField('Cross Street (If known):', validators=None)
-    cleanup = SelectField('Scale of Cleanup (Damage):', choices=['Small', 'Moderate', 'Large'])
-    investigation_status = SelectField('Status of Investigation:', choices=['New', 'In Process', 'In litigation', 'Resolved'])
+    cleanup = SelectField('Scale of Cleanup (Damage):', choices=['No Change', 'Small', 'Moderate', 'Large'])
+    investigation_status = SelectField('Status of Investigation:', choices=['No Change', 'New', 'In Process', 'In litigation', 'Resolved'])
     new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
-    submit = SubmitField('Edit Report')
+    submit = SubmitField('Submit')
+
+class SearchSuspectForm(FlaskForm):
+    first_name = StringField('Suspect First Name (If Known):', validators=None)
+    last_name = StringField('Suspect Last Name (If Known):', validators=None)
+    submit = SubmitField('Look Up Suspect')
 
 class SuspectForm(FlaskForm):
     first_name = StringField('Suspect First Name (If Known):', validators=None)
     last_name = StringField('Suspect Last Name (If Known):', validators=None)
-    gang = StringField('Suspect Gang Affiliation (If Known):', validators =None)
-    status = SelectField('Status of suspect:', choices=['Unknown', 'Identified', 'In Custody', 'Released'])
+    gang = StringField('Gang Affiliation(If Known):', validators =None)
+    status = SelectField('Status of suspect:', choices=['No Change', 'Unknown', 'Identified', 'In Custody', 'Released'])
+    sus_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
+    submit = SubmitField('Create/Update Suspect')
 
