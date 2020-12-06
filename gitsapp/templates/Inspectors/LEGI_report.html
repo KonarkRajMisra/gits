@@ -7,7 +7,7 @@
 <div class="page_container">
 
 
-    <form method=POST>
+    <form method=POST enctype="multipart/form-data"> 
         <div class="row">
                 <div class="col col-lg-6">
                 <!-- This is for the crew info -->
@@ -57,7 +57,7 @@
                 <p></p>
                 
                     <div class="info_box4">
-                        <form method=POST>
+                        <form method=POST enctype="multipart/form-data">
                             {{sus_form.hidden_tag()}}
                             {{search_form.hidden_tag()}}
                             <h1>Suspect Information</h1>
@@ -65,7 +65,7 @@
                                 <div class="col col-lg-4">
                                     {% if found != None %}
                                         {{sus_form.first_name.label}}
-                                        {{sus_form.first_name(value=suspect.first_name)}}
+                                        {{sus_form.first_name(value=suspect.first_name if suspect != None else search_form.first_name.data)}}
                                         {{sus_form.gang.label}}
                                         {{sus_form.gang(value=suspect.gang)}}<br>
                                     {% else %}
@@ -79,9 +79,17 @@
                                 <div class="col col-lg-4">
                                     {% if found != None %}
                                         {{sus_form.last_name.label}}
-                                        {{sus_form.last_name(value=suspect.last_name)}}
+                                        {{sus_form.last_name(value=suspect.last_name if suspect != None else search_form.last_name.data)}}
                                         <p>Click "Choose File" to upload picture of suspect</p>
                                         {{sus_form.sus_photos()}}
+                                        
+                                        {%if sus_image_list != None %}
+                                            <p><b>Suspect Photos:</b></p>
+                                            {% for image in sus_image_list %}
+                                                <img width="100" height="100" src="{{url_for('static', filename='sus_photos/' + image.filename )}}"></img>                                   
+                                            {% endfor %}
+                                        {% endif %}
+
                                     {% else %}
                                         {{search_form.last_name.label}}
                                         {{search_form.last_name(placeholder="Bob")}}
@@ -139,9 +147,9 @@
                             <p>State: <b>{{report.state}}</b></p>
 
 
-                            {{legi_form.building_type.label}}
+                            {{legi_form.type_of_building.label}}
                             <b>Current Value: {{report.type_of_building}}</b><br>
-                            {{legi_form.building_type()}}<br>
+                            {{legi_form.type_of_building()}}<br>
                         </div>
                     </div>
                 </div>
@@ -153,9 +161,15 @@
                 </div>
                 <div class="submit_box">
                     <h3>Click on the "Choose File" button to upload a file:</h3>
-                    {{legi_form.new_photos}}
-                    <button name="Edit" type="submit" value="Edit">Edit File Name</button>
+                    {{legi_form.new_photos()}}
                     <br>{{legi_form.submit()}}
+                    <br>
+                   
+                    <h3>Existing photos</h3>
+                    {% for image in image_list %}
+                        <img width="100" height="100" src="{{url_for('static', filename='report_photos/' + image.filename )}}"></img>                                   
+                    {% endfor %}
+
                 </div>
             </div>
         </div>

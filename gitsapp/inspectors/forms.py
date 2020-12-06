@@ -46,7 +46,7 @@ class RegistrationForm(FlaskForm):
 
 #Form for LEGI report
 class LegiReportForm(FlaskForm):
-    building_type = SelectField('Building Type:', choices=building_choices)
+    type_of_building = SelectField('Building Type:', choices=['No Change', 'Residential', 'Educational', 'Institutional', 'Assembly', 'Business', 'Mercantile', 'Industrial', 'Storage', 'Unsafe', 'Special', 'Car Parking'])
     moniker = StringField('Moniker (If known):', validators=None)
     street_address = StringField('Address (No abbreviations):',validators=[DataRequired()])
     zipcode = IntegerField('Zipcode:',validators=[DataRequired()])

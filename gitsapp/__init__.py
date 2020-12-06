@@ -12,18 +12,18 @@ import googlemaps
 
 
 app = Flask(__name__)
-
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 #Configurations
 app.config['SECRET_KEY'] = 'mysecretkey'
 app.config['GOOGLEMAPS_KEY'] = "AIzaSyD7IJ8NOPPuyGymr2fStLpV-TJfda1JRsY"
+app.config['STATIC'] = os.path.join(app.root_path, 'static')
 
 GoogleMaps(app)
 gmap = googlemaps.Client(key=app.config['GOOGLEMAPS_KEY'])
 
 
 #db setup
-basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir,'data.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 

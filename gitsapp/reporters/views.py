@@ -63,7 +63,7 @@ def ccie_report():
 
         #Save images
         img_list=[]
-        directory = os.path.join(app.instance_path, 'report_photos')
+        directory = os.path.join(app.config['STATIC'], 'report_photos')
         if not os.path.exists(directory):
             os.makedirs(directory)
             
@@ -101,7 +101,7 @@ def ccie_report():
             filename=secure_filename(image.filename)   
             file_path = os.path.join(directory, filename)
             image.save(file_path)
-            rep_image = Report_Image(file_path, report.id)
+            rep_image = Report_Image(file_path, report.id, filename)
             db.session.add(rep_image)
             db.session.commit()
             img_list.append(rep_image)
@@ -110,8 +110,6 @@ def ccie_report():
         db.session.commit()
         return redirect(url_for('reporters_users.dash'))
 
-    
-    print(form.errors)
     #otherwise show the form
     return render_template('Reporters/CCIE_report.html',form=form)
 

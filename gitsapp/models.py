@@ -90,16 +90,24 @@ class Report(db.Model):
 class Report_Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     path = db.Column(db.String(128), nullable=False)
+    filename = db.Column(db.String(128), nullable=False)
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
 
-    def __init__(self, path, report_id):
+    def __init__(self, path, report_id, filename):
         self.path = path
         self.report_id = report_id
+        self.filename = filename
 
 class Suspect_Image(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     path = db.Column(db.String(128), nullable=False)
+    filename = db.Column(db.String(128), nullable=False)
     suspect_id = db.Column(db.Integer, db.ForeignKey('suspect.id'))
+
+    def __init__(self, path, suspect_id, filename):
+        self.path = path
+        self.suspect_id = suspect_id
+        self.filename = filename
 
 class Suspect(db.Model):
 
@@ -113,7 +121,7 @@ class Suspect(db.Model):
     images = db.relationship('Suspect_Image', backref='suspect', lazy=True)
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
 
-    def __init__(self, first_name, last_name, gang, status):
+    def __init__(self, first_name, last_name, gang=None, status="Unknown"):
         self.first_name = first_name
         self.last_name = last_name
         self.gang = gang
