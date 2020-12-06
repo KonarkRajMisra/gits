@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
+{% block head %}
+<link href="{{url_for('static', filename='styles/ccie_style_sheet.css')}}" rel="stylesheet">
+{% endblock %}
+
+
 {% block content %}
 <title>City Crew Incident Entry </title> <!-- This is title of page tab -->
-<link href="{{url_for('static', filename='styles/ccie_style_sheet.css')}}" rel="stylesheet">
-<a class="btn btn-secondary" href="{{url_for('core.index')}}"> X</a>
+<a class="btn btn-secondary" href="{{url_for('reporters_users.dash')}}"> X</a>
 <div class="page_container">
 
 
@@ -24,6 +28,9 @@
 
                     {{form.crew.label}} <br>
                     {{form.crew()}}<br>
+                    {%if form.crew.errors%}
+                    <ul class="errors">{% for error in form.crew.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
 
                     {{form.cleanup.label}} <br>
                     {{form.cleanup()}}
@@ -43,17 +50,27 @@
 
                     {{form.date.label}} <br>
                     {{form.date(type="date")}}
+                    {%if form.crew.errors%}
+                    <ul class="errors">{% for error in form.date.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
                     <!-- </form> -->
                 </div>
             </div>
-            <p> </p>
-            <!-- This is for the incident report -->
-            <div class="info_box">
-                <h1>Incident Report</h1>
+    
+    
+            <p></p>
+            <div class="column">
+                <!-- This is for the notes -->
+                <div class="info_box2">
+                    <h1>Notes of the Incident</h1>
+                    <label for="w3review"></label>
+                    {{form.notes(rows="20", cols="65")}}
+                </div>
+                <p></p>
+                <h3>Click on the "Choose File" button to upload a file:</h3>
                 <!-- <form method="POST"> -->
-                {{form.building_type.label}}
-                {{form.building_type()}}
-
+                {{form.photo()}}
+                    
                 <!-- </form> -->
                 <br><br>
 

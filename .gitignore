@@ -1,3 +1,4 @@
 *.pyc
 gitsapp/data.sqlite
+instance
 __pycache__/

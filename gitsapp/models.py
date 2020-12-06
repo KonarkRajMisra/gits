@@ -32,9 +32,7 @@ class User(db.Model, UserMixin):
     
     def __repr__(self):
         return f"User's Email: {self.email}"
-
     
-
 class Report(db.Model):
     
     __tablename__ = 'report'
@@ -90,8 +88,16 @@ class Report(db.Model):
         self.gps_lng = gps_lng
         self.notes = notes
         self.is_hotspot = is_hotspot
-        #self.image = image
+        self.image = image
     
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
     
+    def has_keyword(self, keyword):
+        if (keyword in str.lower(self.first_name)) or (keyword in str.lower(self.last_name)) or (keyword in str.lower(self.supervisor_fname)) or (keyword in str.lower(self.supervisor_lname)) or (keyword in str.lower(str(self.crew_id))) or (keyword in str.lower(self.scale_of_cleanup)) or (keyword in str.lower(self.type_of_building)) or (keyword in str.lower(self.street_address)) or (keyword in str.lower(str(self.zipcode))) or (keyword in str.lower(self.state)) or (keyword in str.lower(self.cross_street)) or (keyword in str.lower(str(self.gps_lat))) or (keyword in str.lower(str(self.gps_lng))) or (keyword in str.lower(str(self.notes))):
+            return True
+
+        return False
+
+        
+
