@@ -26,6 +26,9 @@
 
                                 {{form.crew.label}} <br>
                                 {{form.crew(placeholder="####")}}<br>
+                                {%if form.crew.errors%}
+                                <ul class="errors">{% for error in form.crew.errors %}<li id="crew-error" class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                                {% endif %}
 
                                 {{form.cleanup.label}} <br>
                                 {{form.cleanup()}}
@@ -45,6 +48,8 @@
 
                                 {{form.date.label}} <br>
                                 {{form.date(type="date")}}
+                                {%if form.date.errors%}
+                                {% endif %}
                                 <!-- </form> -->
                             </div>
                         </div>
@@ -57,12 +62,17 @@
                             <div class="p-2">
                                 {{form.street_address.label}}<br>
                                 {{form.street_address(placeholder="5500 Campanile Drive")}}<br>
-
+                                {%if form.street_address.errors%}
+                                <ul class="errors">{% for error in form.street_address.errors %}<li id="address-error" style="font-size:14px" class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                                {% endif %}
                                 {{form.city.label}}<br>
                                 {{form.city(placeholder="San Diego")}}<br>
 
                                 {{form.zipcode.label}}<br>
                                 {{form.zipcode(placeholder="92182")}}<br>
+                                {%if form.zipcode.errors%}
+                                <ul class="errors">{% for error in form.zipcode.errors %}<li id="zipcode-error" class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                                {% endif %}
 
                                 {{form.building_type.label}}
                                 {{form.building_type()}} 
@@ -95,7 +105,10 @@
                     <!-- TODO: FIX - Once we figure out how to upload files-->
                     <h3>Click on the "Choose File" button to upload a file:</h3>
                     <!-- <form method="POST"> -->
-                    <input type="file" id="myFile" name="filename">
+                    {{form.photos()}}
+                    {%if form.photos.errors%}
+                    <ul class="errors">{% for error in form.photos.errors %}<li id="photos-error" class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
                 </div>
             </div>
             

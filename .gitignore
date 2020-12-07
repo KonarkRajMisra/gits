@@ -5,3 +5,6 @@ __pycache__/
 .DS_Store
 gitsapp/static/report_photos
 gitsapp/static/sus_photos
+*.exe
+.coverage
+*.log
