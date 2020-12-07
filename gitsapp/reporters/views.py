@@ -31,23 +31,22 @@ def login_reporter():
     if current_user.is_authenticated:
         if(current_user.urole == "WORKER"):
             return redirect(url_for('reporters_users.dash'))
-        
-
-        return redirect (url_for('inspectors_users.dash'))
 
     form = LoginForm(request.form)
     if form.validate_on_submit():
-        
+       
         reporter = User.query.filter_by(email=form.email.data).first()
 
-        if(reporter.urole == "WORKER"):
+        if(reporter == None or reporter.urole == "LAW"):
             form.email.errors.append("This is a Law Enforcement account. Use the Law Enforcement  login to use this account")
+            return render_template('Reporters/login_reporter.html',form=form, status=200)
         
         if reporter and reporter.check_pwd(form.password.data):
             login_user(reporter)
             return redirect(url_for('reporters_users.dash'))
 
-    return render_template('Reporters/login_reporter.html',form=form)
+    print(form.errors)
+    return render_template('Reporters/login_reporter.html',form=form, status=200)
 
 
 #after login users should be directed to DASH
