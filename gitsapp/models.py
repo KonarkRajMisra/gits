@@ -76,6 +76,7 @@ class Report(db.Model):
         self.gps_lng = gps_lng
         self.notes = notes
         self.is_hotspot = is_hotspot
+
     
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
@@ -91,7 +92,6 @@ class Report_Image(db.Model):
     path = db.Column(db.String(128), nullable=False)
     filename = db.Column(db.String(128), nullable=False)
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
-
     def __init__(self, path, report_id, filename):
         self.path = path
         self.report_id = report_id

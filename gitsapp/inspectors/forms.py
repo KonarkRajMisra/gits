@@ -78,3 +78,16 @@ class SuspectForm(FlaskForm):
     sus_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
     submit = SubmitField('Create/Update Suspect')
 
+
+class GraffitiAnalysisForm(FlaskForm):
+    start_date = StringField('Start Date', validators=[DataRequired()])
+    end_date = StringField('End Date', validators=[DataRequired()])
+    start_gps_lat = StringField('Starting Date GPS Latitude Coordinates', validators=None)
+    start_gps_lng = StringField('Starting Date GPS Latitude Coordinates', validators=None)
+    end_gps_lat = StringField('Ending Date GPS Latitude Coordinates', validators=None)
+    end_gps_lng = StringField('Ending Date GPS Longitude Coordinates', validators=None)
+    suspect_name = StringField('Suspect Name', validators=None)
+    gang_name = StringField('Gang Name', validators=None)
+    calculate = SubmitField('Calculate')
+
+
