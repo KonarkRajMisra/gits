@@ -62,6 +62,7 @@ def dash():
 @login_required(role="WORKER")
 def ccie_report():
     form = CCIEReportForm()
+    print(form.photos.data)
     #if form submitted create a report
     if form.validate_on_submit():  
         #Save images
@@ -74,7 +75,7 @@ def ccie_report():
         result = gmap.geocode(form.street_address.data)
         #basic check to make sure address matches state
         if(result == None or result[0].get("address_components")[5].get("long_name") != form.state.data):
-            form.state.errors.append('Invalid state')
+            form.street_address.errors.append('Address does not match the state provided. Ensure the address entered has no abbreviations (Ex. Drive not Dr. )')
             return render_template('Reporters/CCIE_report.html', form=form)
 
         
@@ -114,6 +115,7 @@ def ccie_report():
         db.session.commit()
         return redirect(url_for('reporters_users.dash'))
 
+    print(form.errors)
     #otherwise show the form
     return render_template('Reporters/CCIE_report.html',form=form)
 
