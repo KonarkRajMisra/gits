@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,SubmitField,SelectField,IntegerField, MultipleFileField
 from flask_wtf.file import FileAllowed
-from wtforms.validators import DataRequired,Email,EqualTo
-from wtforms import StringField,PasswordField,SubmitField,SelectField
+from wtforms.validators import DataRequired,Email,EqualTo,Optional
+from wtforms import StringField,PasswordField,SubmitField,SelectField,FloatField
 from wtforms.validators import DataRequired,Email,EqualTo, Length, NumberRange
 from wtforms import ValidationError
 from gitsapp.reporters.forms import building_choices
@@ -108,10 +108,10 @@ class SuspectForm(FlaskForm):
 class GraffitiAnalysisForm(FlaskForm):
     start_date = StringField('Start Date', validators=[DataRequired()])
     end_date = StringField('End Date', validators=[DataRequired()])
-    start_gps_lat = StringField('Starting Date GPS Latitude Coordinates', validators=None)
-    start_gps_lng = StringField('Starting Date GPS Latitude Coordinates', validators=None)
-    end_gps_lat = StringField('Ending Date GPS Latitude Coordinates', validators=None)
-    end_gps_lng = StringField('Ending Date GPS Longitude Coordinates', validators=None)
+    start_gps_lng = FloatField('Starting Date GPS Latitude Coordinates', validators=[Optional()])
+    start_gps_lat = FloatField('Starting Date GPS Latitude Coordinates', validators=[Optional()])
+    end_gps_lng = FloatField('Ending Date GPS Longitude Coordinates', validators=[Optional()])
+    end_gps_lat = FloatField('Ending Date GPS Latitude Coordinates', validators=[Optional()])
     suspect_name = StringField('Suspect Name', validators=None)
     gang_name = StringField('Gang Name', validators=None)
     calculate = SubmitField('Calculate')

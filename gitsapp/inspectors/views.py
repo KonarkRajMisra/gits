@@ -231,11 +231,23 @@ def graffiti_analysis():
 
     form = GraffitiAnalysisForm()
     pins = []
-
+    print(form.errors)
+    print(form.validate_on_submit())
     if form.validate_on_submit():
+
         reports = Report.query.all()
+        print(form.start_gps_lat.data)
+
         for report in reports:
-            if form.start_date.data == str(report.date_of_incident).split(" ")[0] or form.end_date.data == str(report.date_of_incident).split(" ")[0] or round(float(form.start_gps_lat.data)) == round(float(report.gps_lat)) or round(float(form.start_gps_lng.data)) == round(float(report.gps_lng)) or round(float(form.end_gps_lng.data)) == round(float(report.gps_lat)) or round(float(form.end_gps_lat.data)) == round(float(report.gps_lat)) or form.suspect_name.data == report.first_name + report.last_name:
+
+            input_start_gps_lat = round(form.start_gps_lat.data) if form.start_gps_lat.data else 0
+            input_start_gps_lng = round(form.start_gps_lng.data) if form.start_gps_lng.data else 0
+            input_end_gps_lat = round(form.end_gps_lat.data) if form.end_gps_lat.data else 0
+            input_end_gps_lng = round(form.end_gps_lng.data) if form.end_gps_lng.data else 0
+
+            if form.start_date.data == str(report.date_of_incident).split(" ")[0] or form.end_date.data == str(report.date_of_incident).split(" ")[0]:
+                
+                #or round(form.start_gps_lat.data) == round(float(report.gps_lat)) or round(form.start_gps_lng.data) == round(float(report.gps_lng)) or round(form.end_gps_lng.data) == round(float(report.gps_lat)) or round(form.end_gps_lat.data) == round(float(report.gps_lat)) or form.suspect_name.data == report.first_name + report.last_name
                 pin_info = {
                     'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
                     "lat": report.gps_lat,
@@ -243,7 +255,20 @@ def graffiti_analysis():
                     "infobox": 
                     '<a href="' + url_for('inspectors_users.legi_report', report_id=report.id) + '">LEGI Report</a> <form method="POST" id="hotspot"><a href="' + url_for('inspectors_users.toggle_hotspot', report_id = report.id) + '"' + "onclick=\"document.getElementById('hotspot').submit();\">Remove hotspot</a></form>"
                 }
-                pins.append(pin_info)
+
+            elif input_start_gps_lat == round(float(report.gps_lat)) or input_start_gps_lng == round(float(report.gps_lng)) or input_end_gps_lat == round(float(report.gps_lat)) or input_end_gps_lng == round(float(report.gps_lng)):
+                pin_info = {
+                    'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                    "lat": report.gps_lat,
+                    "lng": report.gps_lng,
+                    "infobox": 
+                    '<a href="' + url_for('inspectors_users.legi_report', report_id=report.id) + '">LEGI Report</a> <form method="POST" id="hotspot"><a href="' + url_for('inspectors_users.toggle_hotspot', report_id = report.id) + '"' + "onclick=\"document.getElementById('hotspot').submit();\">Remove hotspot</a></form>"
+                }
+            
+            if pin_info:
+                print(pin_info)
+                pins.append(pin_info) 
+
 
     report_map = Map(identifier="reports_map", lat=39.8283, lng=-98.5795,marker=pins )
 
