@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+
+    <h3>
+        Status Report
+    </h3>
+    <ol>
+
+        <li>
+            <h5>
+                Department: Law Enforcement Department
+            </h5>
+        </li>
+
+        
+        <li>
+            <h5>
+                Date : {{today}}
+            </h5>
+
+        </li>
+    
+        <li>
+            <h5>
+                Total Incidents: {{total_incidents}}
+            </h5>
+        </li>
+
+        <li>
+            <h5>
+                Total Law Enforcement Officers: {{total_law}}
+            </h5>
+        </li>
+        
+        <ol>
+
+            <h5>
+                TOTALS:
+            </h5>
+            <li>
+                Number of new incidents since last status report: {{new_incident}}
+            </li>
+            <li>
+                Number of incidents with no known suspect: {{incidents_with_no_suspects}}
+            </li>
+            <li>
+                Number of incidents with identified suspect(s): {{incidents_with_identified_suspects}}
+            </li>
+            <li>
+                Number of incidents with suspects in custody: {{incidents_with_suspects_in_custody}}
+            </li>
+            <li>
+                Number of incidents with released suspect(s): {{incidents_with_suspects_released}}
+            </li>
+            <li>
+                Number of incidents resolved: {{incidents_resolved}}
+            </li>
+        </ol>
+
+        <ol>
+            <h5>
+                Per Official:
+            </h5>
+
+            <li>
+                Number of new incidents since last status report: {{new_incident}}
+            </li>
+
+            <li>
+                Number of incidents with no known suspect: {{incidents_with_no_suspects}}
+            </li>
+
+            <li>
+                Number of incidents with identified suspect(s): {{incidents_with_identified_suspects}}
+            </li>
+
+            <li>
+                Number of incidents with suspects in custody: {{incidents_with_suspects_in_custody}}
+            </li>
+
+            <li>
+                Number of incidents with released suspect(s): {{incidents_with_suspects_released}}
+            </li>
+
+            <li>
+                Number of incidents resolved: {{incidents_resolved}}
+            </li>
+        </ol>
+    
+
+    </ol>
+    
+</div>
+
+{% endblock %} 

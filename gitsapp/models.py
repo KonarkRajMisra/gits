@@ -37,11 +37,9 @@ class Report(db.Model):
     
     __tablename__ = 'report'
    
-
-    
     id = db.Column(db.Integer, primary_key=True)
-    first_name=db.Column(db.String(64), nullable=False)
-    last_name=db.Column(db.String(64), nullable=False)
+    first_name = db.Column(db.String(64), nullable=False)
+    last_name = db.Column(db.String(64), nullable=False)
     supervisor_fname = db.Column(db.String(64), nullable=False)
     supervisor_lname = db.Column(db.String(64), nullable=False)
     crew_id = db.Column(db.Integer, nullable=False)
@@ -59,7 +57,6 @@ class Report(db.Model):
     investigation_status = db.Column(db.String(64), nullable=True)      
     images = db.relationship('Report_Image', backref='report', lazy=True)
     is_hotspot = db.Column(db.Boolean,nullable=False)
-
     suspect = db.relationship('Suspect', backref=db.backref('report', lazy=True))
 
     def __init__(self, first_name, last_name, supervisor_fname, supervisor_lname, crew_id, date_of_incident, scale_of_cleanup, type_of_building, street_address, zipcode, state,  gps_lat, gps_lng, is_hotspot, image=None, notes=None, cross_street=None):
@@ -79,14 +76,15 @@ class Report(db.Model):
         self.gps_lng = gps_lng
         self.notes = notes
         self.is_hotspot = is_hotspot
+
     
     def __repr__(self) -> str:
         return f"Zipcode: {self.zipcode}"
 
     def has_keyword(self, keyword):
+        keyword = str.lower(keyword)
         if (keyword in str.lower(self.first_name)) or (keyword in str.lower(self.last_name)) or (keyword in str.lower(self.supervisor_fname)) or (keyword in str.lower(self.supervisor_lname)) or (keyword in str.lower(str(self.crew_id))) or (keyword in str.lower(self.scale_of_cleanup)) or (keyword in str.lower(self.type_of_building)) or (keyword in str.lower(self.street_address)) or (keyword in str.lower(str(self.zipcode))) or (keyword in str.lower(self.state)) or (keyword in str.lower(self.cross_street)) or (keyword in str.lower(str(self.gps_lat))) or (keyword in str.lower(str(self.gps_lng))) or (keyword in str.lower(str(self.notes))):
             return True
-
         return False
     
 class Report_Image(db.Model):
@@ -94,7 +92,6 @@ class Report_Image(db.Model):
     path = db.Column(db.String(128), nullable=False)
     filename = db.Column(db.String(128), nullable=False)
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
-
     def __init__(self, path, report_id, filename):
         self.path = path
         self.report_id = report_id
