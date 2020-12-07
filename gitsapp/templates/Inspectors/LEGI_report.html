@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
 <title>Law Enforcement Graffiti Incident Entry </title> <!-- This is title of page tab -->
+
 <link href="{{url_for('static', filename='css/legi_style_sheet.css')}}" rel="stylesheet">
 <a class="btn btn-secondary" href="{{url_for('core.index')}}"> X</a>
 <div class="page_container">
 
 
-    <form method=POST>
+    <form method=POST enctype="multipart/form-data"> 
         <div class="row">
                 <div class="col col-lg-6">
                 <!-- This is for the crew info -->
@@ -14,19 +15,16 @@
                         <h1>Crew Information</h1>
                         <div class="row">
                             <div class="col col-lg-6">
-                                <p>crew first name</p>
+                                <p>Reporter First Name: <b>{{report.first_name}}</b></p>
 
-                                <p>supervisor first name</p>
+                                <p>Supervisor First Name: <b>{{report.supervisor_fname}}</b></p>
 
-                                <p>crew id number</p>
-
-                                <p>clean up scale</p>
+                                <p>Crew ID: <b>{{report.crew_id}}</b></p>
                             </div>
 
                             <div class="col col-lg-6">
-                                <p>crew last name</p>
-                                <p>supervisor lst name</p>
-                            
+                                <p>Reporter Last Name: <b>{{report.last_name}}</b></p>
+                                <p>Supervisor Last Name: <b>{{report.supervisor_lname}}</b></p>
                             </div>
                         </div>
                         
@@ -35,88 +33,88 @@
                 <p> </p>
 
                     <div class="info_box5">
-                        <h1>Graffiti Information</h1>
-                        <div class="row">
-                            <div class="col col-lg-6">
-                                <form action="/action_page.php">
-                                    <label for="monkier">Monkier:</label><br>
-                                    <input type="text" id="monkier" name="monkier" value="Description of Graffiti Image"><br>
-                                </form>
-                                
-                                <form action="/action_page.php">
-                                    <label for="damage_amount">Amount of Cleanup:</label>
-                                    <select name="damage_amount" id="damage_amount">
-                                    <option value="Small">Small</option>
-                                    <option value="Moderate">Moderate</option>
-                                    <option value="Large">Large</option>
-                                    </select>
+                        <form method=POST>
+                            {{legi_form.hidden_tag()}}
+                            <h1>Graffiti Information</h1>
+                            <div class="row">
+                                <div class="col col-lg-6">
+                                    {{legi_form.moniker.label}}<br>
+                                    {{legi_form.moniker(value=report.moniker if report.moniker != None else "")}}<br>
+                                    {{legi_form.cleanup.label}}<br>
+                                    <b>Current Value: {{report.scale_of_cleanup}}</b><br>
+                                    {{legi_form.cleanup}}
                                     <br><br>
-                                </form>
-                            </div>
-                            <div class="col col-lg-6">
-                                <form action="/action_page.php">
-                                    <label for="invest_status">Investigation Status:</label>
-                                    <select name="invest_status" id="invest_status">
-                                    <option value="New">New</option>
-                                    <option value="In Progress">In progress</option>
-                                    <option value="In Litigation">In Litigation</option>
-                                    <option value="Resolved">Resolved</option>
-                                    </select>
+                                </div>
+                                <div class="col col-lg-6">
+                                    {{legi_form.investigation_status.label}}<br>
+                                    <b>Current Value: {{report.investigation_status}}</b><br>
+                                    {{legi_form.investigation_status()}}
                                     <br><br>
-                                </form>
+                                </div>
                             </div>
-                        </div>
-                        
+                        </form>
                     </div>
                 <p></p>
                 
                     <div class="info_box4">
-                        <h1>Suspect Information</h1>
-                        <div class="row">
-                            <div class="col col-lg-4">
-                                <form action="/action_page.php">
-                                    <label for="suspect_fname">Suspect First Name:</label><br>
-                                    <input type="text" id="suspect_fname" name="suspect_fname" value="Gon"><br>
-                                </form>
+                        <form method=POST enctype="multipart/form-data">
+                            {{sus_form.hidden_tag()}}
+                            {{search_form.hidden_tag()}}
+                            <h1>Suspect Information</h1>
+                            <div class="row">
+                                <div class="col col-lg-4">
+                                    {% if found != None %}
+                                        {{sus_form.first_name.label}}
+                                        {{sus_form.first_name(value=suspect.first_name if suspect != None else search_form.first_name.data)}}
+                                        {{sus_form.gang.label}}
+                                        {{sus_form.gang(value=suspect.gang)}}<br>
+                                    {% else %}
+                                        {{search_form.first_name.label}}
+                                        {{search_form.first_name(placeholder="Doodle")}}
 
-                                <form action="/action_page.php">
-                                    <label for="gang_name">Gang or Crew Name:</label><br>
-                                    <input type="text" id="gang_name" name="gang_name" value="The Bad Guys"><br>
-                                </form>
+                                    {%endif%}
+
+                                </div>
+
+                                <div class="col col-lg-4">
+                                    {% if found != None %}
+                                        {{sus_form.last_name.label}}
+                                        {{sus_form.last_name(value=suspect.last_name if suspect != None else search_form.last_name.data)}}
+                                        <p>Click "Choose File" to upload picture of suspect</p>
+                                        {{sus_form.sus_photos()}}
+                                        
+                                        {%if sus_image_list != None %}
+                                            <p><b>Suspect Photos:</b></p>
+                                            {% for image in sus_image_list %}
+                                                <img width="100" height="100" src="{{url_for('static', filename='sus_photos/' + image.filename )}}"></img>                                   
+                                            {% endfor %}
+                                        {% endif %}
+
+                                    {% else %}
+                                        {{search_form.last_name.label}}
+                                        {{search_form.last_name(placeholder="Bob")}}
+                                    {% endif %}
+                                </div>
+
+
+                                <div class="col col-lg-4">
+                                    {% if found != None %}
+                                        {% if found == False %}
+                                            <p class="text-danger">Suspect not found! Continue entering information</p>
+                                        
+                                        {% else %}
+                                            <p class="text-success">Suspect found/created!</p>
+                                        {% endif %}
+                                        {{sus_form.submit()}}
+                                        {{sus_form.status.label}}<br>
+                                        {{sus_form.status()}}
+                                    {% else %}
+                                        <br>
+                                        {{search_form.submit()}}
+                                    {% endif %}
+                                </div>
                             </div>
-
-
-                            <div class="col col-lg-4">
-                                <form action="/action_page.php">
-                                    <label for="suspect_lname">Suspect Last Name:</label><br>
-                                    <input type="text" id="suspect_lname" name="suspect_lname" value="Freecss"><br>
-                                </form>
-
-                                <form action="/action_page.php">
-                                    <p>Click "Choose File" to upload picture of suspect</p>
-                                    <input type="file" id="myFile" name="filename">
-                                </form>
-                            </div>
-
-
-                            <div class="col col-lg-4">
-                                <form action="/action_page.php">
-                                    <p>Click to look up suspect:</p>
-                                    <button name="lookup" type="submit" value="lookup">Look Up Suspect</button>
-                                    <p></p>
-                                    <form action="/action_page.php">
-                                    <label for="sus_status">Suspect Status:</label>
-                                    <select name="sus_status" id="sus_status">
-                                    <option value="Unknown">Unknown</option>
-                                    <option value="Identified">Identified</option>
-                                    <option value="In Custody">In Custody</option>
-                                    <option value="Released">Released</option>
-                                    </select>
-                                    <br><br>
-                                </form>
-                                </form>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                     
                 <p></p>
@@ -129,14 +127,29 @@
                     <h1>Incident Report</h1>
                     <div class="row">
                         <div class="col col-lg-6">
-                            <p>building type</p>
-                            <p>street addr</p>
-                            <p>zipcode</p>
+
+
+                            {{legi_form.street_address.label}}<br>
+                            {{legi_form.street_address(value=report.street_address if report.street_address != None else "")}}<br>
+                            {% if legi_form.street_address.errors %}
+                                <ul class="errors">{% for error in legi_form.street_address.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                            {% endif %}
+
+
+                            {{legi_form.zipcode.label}}
+                            {{legi_form.zipcode(value=report.zipcode if report.zipcode != None else "")}}
+                           
                         </div>
 
                         <div class="col col-lg-6">
-                            <p>cross street addr</p>
-                            <p>state</p>
+                            {{legi_form.cross_street.label}}
+                            {{legi_form.cross_street(value=report.cross_street if report.cross_street != None else "")}}
+                            <p>State: <b>{{report.state}}</b></p>
+
+
+                            {{legi_form.type_of_building.label}}
+                            <b>Current Value: {{report.type_of_building}}</b><br>
+                            {{legi_form.type_of_building()}}<br>
                         </div>
                     </div>
                 </div>
@@ -144,16 +157,20 @@
                 <!-- This is for the incident report -->
                 <div class="info_box2">
                     <h1>Notes of the Incident</h1>
-                    <label for="w3review"></label>
+                    {{report.notes}}
                 </div>
                 <div class="submit_box">
                     <h3>Click on the "Choose File" button to upload a file:</h3>
-                    <form action="/action_page.php">
-                        <input type="file" id="myFile" name="filename">
-                        <button name="Edit" type="submit" value="Edit">Edit File Name</button>
-                        <input type="submit">
-                    </form>
-                    </div>
+                    {{legi_form.new_photos()}}
+                    <br>{{legi_form.submit()}}
+                    <br>
+                   
+                    <h3>Existing photos</h3>
+                    {% for image in image_list %}
+                        <img width="100" height="100" src="{{url_for('static', filename='report_photos/' + image.filename )}}"></img>                                   
+                    {% endfor %}
+
+                </div>
             </div>
         </div>
         <br>    

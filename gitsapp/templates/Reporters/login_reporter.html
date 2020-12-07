@@ -9,6 +9,9 @@
                     <h3> Sign In </h3>
                 </div>
                 <div class="card-body">
+                    {%if form.email.errors or form.password.errors%}
+                        <div class="alert alert-danger">Invalid login</div><br>
+                    {%endif%}
                     <form method="POST">
                         {{form.hidden_tag()}}
                         <div class="input-group form-group">

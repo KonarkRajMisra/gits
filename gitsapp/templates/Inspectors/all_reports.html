@@ -11,13 +11,13 @@
             <th scope="col">Supervisor Last Name</th>
             <th scope="col">Crew Id</th>
             <th scope="col">Date of Incident</th>
-            <th scope="col">Scale of Cleanup</th>
-            <th scope="col">Type Of Building</th>
+            <th scope="col">Type of Building</th>
             <th scope="col">Street Address</th>
             <th scope="col">Zipcode</th>
             <th scope="col">State</th>
             <th scope="col">Cross Street</th>
             <th scope="col">Notes</th>
+            <th scope="col">Scale Of Cleanup</th>
 
         </tr>
         <tbody>
@@ -40,6 +40,7 @@
               <td>{{report.state}}</td>
               <td>{{report.cross_street}}</td>
               <td>{{report.notes}}</td>
+              <td>{{report.scale_of_cleanup}}</td>
             </tr>
             {%endfor%}
         </tbody>

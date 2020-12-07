@@ -1,0 +1,142 @@
+{% extends "base.html" %} {% block content %}
+<div class="jumbotron">
+  <h2>Graffiti Analysis</h2>
+
+  <ul>
+    <li>
+      <h3>Dates</h3>
+      <table class="table table-dark">
+          <tr>
+
+          
+          <th scope="col">
+             Date 
+          </th>
+          <th scope="col">
+              Frequency
+          </th>
+        </tr>
+        <tbody>
+            {% for key,val in date_frequency.items() %}
+            <tr>
+                
+                <td>
+                    {{key}}: 
+
+                </td>
+                <td>
+                    {{val}}
+                </td>
+            </tr>
+            
+
+            {% endfor %}
+
+        </tbody>
+      
+    </table>
+    </li>
+    <li>
+        <h3>Zipcode</h3>
+        <table class="table table-dark">
+            <tr>
+  
+            
+            <th scope="col">
+               Zipcode 
+            </th>
+            <th scope="col">
+                Frequency
+            </th>
+          </tr>
+          <tbody>
+              {% for key,val in zip_frequency.items() %}
+              <tr>
+                  
+                  <td>
+                      {{key}}: 
+  
+                  </td>
+                  <td>
+                      {{val}}
+                  </td>
+              </tr>
+              
+  
+              {% endfor %}
+  
+          </tbody>
+        
+      </table>
+    </li>
+
+    <li>
+        <h3>Range of GPS Coordinates</h3>
+        <table class="table table-dark">
+            <tr>
+  
+            
+            <th scope="col">
+               GPS Coordinates 
+            </th>
+            <th scope="col">
+                Frequency
+            </th>
+          </tr>
+          <tbody>
+              {% for key,val in gps_range.items() %}
+              <tr>
+                  
+                  <td>
+                      {{key}}: 
+  
+                  </td>
+                  <td>
+                      {{val}}
+                  </td>
+              </tr>
+              
+  
+              {% endfor %}
+  
+          </tbody>
+        
+      </table>
+    </li>
+
+    <li>
+        <h3>Crew ID</h3>
+        <table class="table table-dark">
+            <tr>
+  
+            
+            <th scope="col">
+               Crew ID
+            </th>
+            <th scope="col">
+                Frequency
+            </th>
+          </tr>
+          <tbody>
+              {% for key,val in crew_ids.items() %}
+              <tr>
+                  
+                  <td>
+                      {{key}}: 
+  
+                  </td>
+                  <td>
+                      {{val}}
+                  </td>
+              </tr>
+              
+  
+              {% endfor %}
+  
+            </tbody>
+        </table>
+    </li>
+  </ul>
+</div>
+
+{% endblock %}
