@@ -1,26 +1,16 @@
 {% extends "base.html" %} {% block content %}
 
 <head>
-  <title>Graffiti Report</title>
+  <title>Graffiti Analysis</title>
   <!-- This is title of page tab -->
   <link
-    href="{{url_for('static', filename='ga_style_sheet.css')}}"
+    href="{{url_for('static', filename='css/ga_style_sheet.css')}}"
     rel="stylesheet"
   />
   <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD7IJ8NOPPuyGymr2fStLpV-TJfda1JRsY&callback=initMap&libraries=&v=weekly"
     defer
   ></script>
-
-  <style type="text/css">
-    /* Set the size of the div element that contains the map */
-    #map {
-      height: 400px;
-      /* The height is 400 pixels */
-      width: 100%;
-      /* The width is the width of the web page */
-    }
-  </style>
 
   <script>
     var map = null;
@@ -55,43 +45,36 @@
   <button>
     <a href="{{url_for('inspectors_users.dash')}}">Dash Board</a>
   </button>
-  <div class=".container-flud">
+  <div class="container">
     <div class="box">
-      <div class="col-lg-4">
-        <h2 class="text-center">Frequency of Graffiti Incidents</h2>
-        <div class="col-lg-4">
+      <h2 class="text-center">Frequency of Graffiti Incidents</h2>
         <form method="POST">
+          <div class="row">
             {{form.hidden_tag()}}
-          <div>
-            {{form.start_date.label}} {{form.start_date(type="date")}}
-            {{form.end_date.label}} {{form.end_date(type="date")}}
-          </div>
-          <p></p>
-          <div>
-            {{form.start_gps_lat.label}} {{form.start_gps_lat()}}
-            {{form.end_gps_lat.label}} {{form.end_gps_lat()}}
-          </div>
-          <p></p>
-          <div>
-            {{form.start_gps_lng.label}} {{form.start_gps_lng()}}
-            {{form.end_gps_lng.label}} {{form.end_gps_lng()}}
-          </div>
-          <p></p>
-          {{form.suspect_name.label}} <br />
-          {{form.suspect_name()}}<br />
-
-          {{form.gang_name.label}} <br />
-          {{form.gang_name()}}<br />
-
-          {{form.calculate()}}
-        </div>
-    </form>
-      </div>
-      <div class="col-lg-4">
-        <div id="map"></div>
-      </div>
-    </div>
-  </div>
+            <div class="col col-lg-6">
+              {{form.start_date.label}} {{form.start_date(type="date")}} <br>
+              {{form.start_gps_lat.label}} {{form.start_gps_lat(placeholder="32.71")}}<br>
+              {{form.start_gps_lng.label}} {{form.start_gps_lng(placeholder="117.16")}}<br>
+              {{form.suspect_fname.label}} {{form.suspect_fname(placeholder="Steve")}}<br>
+              {{form.gang_name.label}} {{form.gang_name(placeholder="The Bad Guys")}}<br>
+            </div>
+            <p></p>
+            <div class="col col-lg-6">
+              {{form.end_date.label}} {{form.end_date(type="date")}}<br>
+              {{form.end_gps_lat.label}} {{form.end_gps_lat(placeholder="37.7749")}}<br>
+              {{form.end_gps_lng.label}} {{form.end_gps_lng(placeholder="122.4194")}}<br>
+              {{form.suspect_lname.label}} {{form.suspect_lname(placeholder="Peters")}}<br>
+              
+              
+            </div>
+            {{form.calculate()}}
+          </div> <!-- end of row  -->
+        </form>
+          
+      
+      
+    </div> <!-- end of box  -->
+  </div> <!-- end of container  -->
   <div class="jumbotron">
     {{googlemap("reports_map", lat=39.8283, lng=-98.5795, markers=pins, zoom=2)}}
   </div>

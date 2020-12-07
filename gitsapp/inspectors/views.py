@@ -232,8 +232,7 @@ def graffiti_analysis():
     if form.validate_on_submit():
         reports = Report.query.all()
         for report in reports:
-            
-            if form.start_date.data == str(report.date_of_incident).split(" ")[0] or form.end_date.data == str(report.date_of_incident).split(" ")[0] or form.start_gps_lat.data == report.gps_lat or form.start_gps_lng.data == report.gps_lng or form.end_gps_lng.data == report.gps_lat or form.end_gps_lat.data == report.gps_lat or form.suspect_name.data == report.first_name + report.last_name:
+            if form.start_date.data == str(report.date_of_incident).split(" ")[0] or form.end_date.data == str(report.date_of_incident).split(" ")[0] or round(float(form.start_gps_lat.data)) == round(float(report.gps_lat)) or round(float(form.start_gps_lng.data)) == round(float(report.gps_lng)) or round(float(form.end_gps_lng.data)) == round(float(report.gps_lat)) or round(float(form.end_gps_lat.data)) == round(float(report.gps_lat)) or form.suspect_name.data == report.first_name + report.last_name:
                 pin_info = {
                     'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
                     "lat": report.gps_lat,
