@@ -12,7 +12,7 @@ def test_incorrect_reporter_login(test_client, new_reporter):
 
 
 def test_correct_inspector_login(test_client, new_inspector):
-    response = test_client.post('login_inspector', data=dict(email=new_inspector.email,password='12345678'))
+    response = test_client.post('/login_inspector', data=dict(email=new_inspector.email,password='12345678'))
     assert response.status_code == 302
 
     response = test_client.get('/inspector/sign_out')

@@ -58,8 +58,8 @@ class LegiReportForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class SearchSuspectForm(FlaskForm):
-    first_name = StringField('Suspect First Name (If Known):', validators=None)
-    last_name = StringField('Suspect Last Name (If Known):', validators=None)
+    search_first_name = StringField('Suspect First Name (If Known):', validators=None)
+    search_last_name = StringField('Suspect Last Name (If Known):', validators=None)
     submit = SubmitField('Look Up Suspect')
 
 class SuspectForm(FlaskForm):

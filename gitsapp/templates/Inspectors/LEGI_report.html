@@ -65,12 +65,12 @@
                                 <div class="col col-lg-4">
                                     {% if found != None %}
                                         {{sus_form.first_name.label}}
-                                        {{sus_form.first_name(value=suspect.first_name if suspect != None else search_form.first_name.data)}}
+                                        {{sus_form.first_name(value=suspect.first_name if suspect != None else search_form.search_first_name.data)}}
                                         {{sus_form.gang.label}}
                                         {{sus_form.gang(value=suspect.gang)}}<br>
                                     {% else %}
-                                        {{search_form.first_name.label}}
-                                        {{search_form.first_name(placeholder="Doodle")}}
+                                        {{search_form.search_first_name.label}}
+                                        {{search_form.search_first_name(placeholder="Doodle")}}
 
                                     {%endif%}
 
@@ -91,8 +91,8 @@
                                         {% endif %}
 
                                     {% else %}
-                                        {{search_form.last_name.label}}
-                                        {{search_form.last_name(placeholder="Bob")}}
+                                        {{search_form.search_last_name.label}}
+                                        {{search_form.search_last_name(placeholder="Bob")}}
                                     {% endif %}
                                 </div>
 
