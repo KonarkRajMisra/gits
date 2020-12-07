@@ -15,4 +15,4 @@ def test_correct_inspector_registration(test_client, new_inspector):
 def test_incorrect_inspector_registration(test_client, new_inspector):
 
     response = test_client.post('/register_inspector', data=dict(email=new_inspector.email, password='not_correct_password'))
-    assert response.status_code = 200
+    assert response.status_code == 200
