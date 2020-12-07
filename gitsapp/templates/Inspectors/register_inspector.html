@@ -20,7 +20,7 @@
                             </div>
 
                             {%if form.email.errors%}
-                                <ul class="errors">{% for error in form.email.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                                <ul class="errors"><li class="text-danger">{{ form.email.errors[0] }}</li></ul>
                             {% endif %}
                         </div>
                         

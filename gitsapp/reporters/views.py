@@ -62,7 +62,6 @@ def dash():
 @login_required(role="WORKER")
 def ccie_report():
     form = CCIEReportForm()
-    print(form.photos.data)
     #if form submitted create a report
     if form.validate_on_submit():  
         #Save images
@@ -115,7 +114,6 @@ def ccie_report():
         db.session.commit()
         return redirect(url_for('reporters_users.dash'))
 
-    print(form.errors)
     #otherwise show the form
     return render_template('Reporters/CCIE_report.html',form=form)
 

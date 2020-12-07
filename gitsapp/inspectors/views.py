@@ -126,7 +126,6 @@ def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
         suspect = report.suspect[0]
 
     if search_form.validate_on_submit() and suspect == None:
-        print("Here")
         #Search suspect to autofill
         if search_form.search_first_name.data and search_form.search_last_name.data:
             for search_suspect in Suspect.query.all():
@@ -138,7 +137,6 @@ def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
                     break
             
             if suspect == None:
-                print("NO SUSPECT")
                 suspect = Suspect(search_form.search_first_name.data, search_form.search_last_name.data)
                 db.session.add(suspect)
                 db.session.commit()
@@ -222,7 +220,6 @@ def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
             return redirect(url_for('inspectors_users.all_reports'))
         return redirect(url_for('inspectors_users.all_reports'))
 
-    print(legi_form.errors)
     return render_template('inspectors/LEGI_report.html',report=report, suspect=suspect, sus_form=sus_form, legi_form=legi_form, search_form=search_form, found=found, image_list=report.images, sus_image_list= suspect.images if suspect != None else None), status
 
 @inspectors_users.route('/inspector/graffiti_analysis', methods=['GET','POST'])
@@ -245,7 +242,6 @@ def graffiti_analysis():
                     '<a href="' + url_for('inspectors_users.legi_report', report_id=report.id) + '">LEGI Report</a> <form method="POST" id="hotspot"><a href="' + url_for('inspectors_users.toggle_hotspot', report_id = report.id) + '"' + "onclick=\"document.getElementById('hotspot').submit();\">Remove hotspot</a></form>"
                 }
                 pins.append(pin_info)
-                print(pins)
 
     report_map = Map(identifier="reports_map", lat=39.8283, lng=-98.5795,marker=pins )
 
@@ -265,7 +261,6 @@ def graffiti_reporting(data=None):
     if form.validate_on_submit():
 
         for report in Report.query.all():
-            print(form.search.data)
             if report.has_keyword(form.search.data):
                 urls.append(url_for('inspectors_users.legi_report',report_id=report.id))
                 reports.append(report)
