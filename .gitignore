@@ -8,3 +8,5 @@ gitsapp/static/sus_photos
 *.exe
 .coverage
 *.log
+.coverage
+
