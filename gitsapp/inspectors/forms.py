@@ -40,6 +40,13 @@ def files_allowed(form,field):
         if extension.lower() not in allowed_exts:
             raise ValidationError('File not allowed. Images only!')
 
+def files_allowed(form,field):
+    for file in field.data:
+        file_name, extension = os.path.splitext(file.filename)
+
+        if extension.lower() not in allowed_exts:
+            raise ValidationError('File not allowed. Images only!')
+
 def validate_email(form,field):
     if User.query.filter_by(email=field.data).first():
         raise ValidationError('User already exists. Please Log In.')
@@ -81,7 +88,7 @@ class LegiReportForm(FlaskForm):
     cross_street = StringField('Cross Street (If known):', validators=None)
     cleanup = SelectField('Scale of Cleanup (Damage):', choices=['No Change', 'Small', 'Moderate', 'Large'])
     investigation_status = SelectField('Status of Investigation:', choices=['No Change', 'New', 'In Process', 'In litigation', 'Resolved'])
-    new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
+    new_photos = MultipleFileField('Add Photos:', validators=[files_allowed])
     submit = SubmitField('Submit')
 
 class SearchForm(FlaskForm):
