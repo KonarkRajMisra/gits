@@ -38,8 +38,9 @@ def login_inspector():
         
         inspector = User.query.filter_by(email=form.email.data).first()
 
-        if(inspector.urole == "WORKER"):
+        if(inspector == None or inspector.urole == "WORKER"):
             form.email.errors.append("This is a City Worker account. Use the City Worker login to use this account")
+            return render_template('inspectors/login_inspector.html',form=form)
         
         elif inspector and inspector.check_pwd(form.password.data):
             login_user(inspector)
