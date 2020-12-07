@@ -94,9 +94,6 @@ class LegiReportForm(FlaskForm):
 class SearchForm(FlaskForm):
     search = StringField('search', [DataRequired()])
     submit = SubmitField('Search Report')
-    cleanup = SelectField('Scale of Cleanup (Damage):', choices=['No Change', 'Small', 'Moderate', 'Large'])
-    investigation_status = SelectField('Status of Investigation:', choices=['No Change', 'New', 'In Process', 'In litigation', 'Resolved'])
-    new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
     submit = SubmitField('Submit')
 
 class SearchSuspectForm(FlaskForm):
