@@ -231,12 +231,10 @@ def graffiti_analysis():
 
     form = GraffitiAnalysisForm()
     pins = []
-    print(form.errors)
-    print(form.validate_on_submit())
+
     if form.validate_on_submit():
 
         reports = Report.query.all()
-        print(form.start_gps_lat.data)
 
         for report in reports:
 
@@ -266,7 +264,6 @@ def graffiti_analysis():
                 }
             
             if pin_info:
-                print(pin_info)
                 pins.append(pin_info) 
 
 

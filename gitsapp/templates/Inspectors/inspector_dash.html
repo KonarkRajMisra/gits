@@ -56,17 +56,17 @@
 
   <a
     class="btn btn-outline-primary"
-    href="{{url_for('inspectors_users.signout_inspector')}}"
-  >
-    Sign out
-  </a>
-
-  <a
-    class="btn btn-outline-primary"
     href="{{url_for('inspectors_users.graffiti_reporting')}}"
   >
     Graffiti Reporting
   </a>
+
+  <a
+  class="btn btn-outline-primary"
+  href="{{url_for('inspectors_users.signout_inspector')}}"
+>
+  Sign out
+</a>
   {{googlemap("reports_map", lat=39.8283, lng=-98.5795, markers=pins, zoom=2)}}
 </div>
 

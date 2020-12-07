@@ -6,9 +6,10 @@ from wtforms import StringField,PasswordField,SubmitField,SelectField,FloatField
 from wtforms.validators import DataRequired,Email,EqualTo, Length, NumberRange
 from wtforms import ValidationError
 from gitsapp.reporters.forms import building_choices
-
+from gitsapp import gmap
 from flask_login import current_user
 from gitsapp.models import User
+import os
 
 cleanup_choice = [
     'Small',
@@ -39,20 +40,27 @@ def files_allowed(form,field):
         if extension.lower() not in allowed_exts:
             raise ValidationError('File not allowed. Images only!')
 
+def files_allowed(form,field):
+    for file in field.data:
+        file_name, extension = os.path.splitext(file.filename)
+
+        if extension.lower() not in allowed_exts:
+            raise ValidationError('File not allowed. Images only!')
+
 def validate_email(form,field):
     if User.query.filter_by(email=field.data).first():
         raise ValidationError('User already exists. Please Log In.')
 
-def validate_address(form, field):
-    #Find GPS coordinates
-    result = gmap.geocode(field.data)
-    #basic check to make sure address matches state
-    try:
-        if(result == None or result[0].get("address_components")[5].get("long_name") != form.state.data):
-            raise ValidationError('Address does not match the state provided. Ensure the address entered has no abbreviations (Ex. Drive not Dr. )')
+# def validate_address(form, field):
+#     #Find GPS coordinates
+#     result = gmap.geocode(field.data)
+#     #basic check to make sure address matches state
+#     try:
+#         if(result == None or result[0].get("address_components")[5].get("long_name") != form.state.data):
+#             raise ValidationError('Address does not match the state provided. Ensure the address entered has no abbreviations (Ex. Drive not Dr. )')
 
-    except:
-         raise ValidationError('Address does not match the state provided. Ensure the address entered has no abbreviations (Ex. Drive not Dr. )')
+#     except:
+#          raise ValidationError('Address does not match the state provided. Ensure the address entered has no abbreviations (Ex. Drive not Dr. )')
 
 
 class LoginForm(FlaskForm):
@@ -75,12 +83,12 @@ class RegistrationForm(FlaskForm):
 class LegiReportForm(FlaskForm):
     type_of_building = SelectField('Building Type:', choices=['No Change', 'Residential', 'Educational', 'Institutional', 'Assembly', 'Business', 'Mercantile', 'Industrial', 'Storage', 'Unsafe', 'Special', 'Car Parking'])
     moniker = StringField('Moniker (If known):', validators=None)
-    street_address = StringField('Address (No abbreviations):',validators=[DataRequired(), validate_address])
+    street_address = StringField('Address (No abbreviations):',validators=[DataRequired()])
     zipcode = IntegerField('Zipcode:',validators=[DataRequired(), NumberRange(00000, 99999, 'Zipcodes are 5 digits')])
     cross_street = StringField('Cross Street (If known):', validators=None)
     cleanup = SelectField('Scale of Cleanup (Damage):', choices=['No Change', 'Small', 'Moderate', 'Large'])
     investigation_status = SelectField('Status of Investigation:', choices=['No Change', 'New', 'In Process', 'In litigation', 'Resolved'])
-    new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
+    new_photos = MultipleFileField('Add Photos:', validators=[files_allowed])
     submit = SubmitField('Submit')
 
 class SearchForm(FlaskForm):

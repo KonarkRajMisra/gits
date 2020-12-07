@@ -82,6 +82,9 @@
                                         {{sus_form.last_name(value=suspect.last_name if suspect != None else search_form.last_name.data)}}
                                         <p>Click "Choose File" to upload picture of suspect</p>
                                         {{sus_form.sus_photos()}}
+                                        {% if sus_form.sus_photos.errors %}
+                                            <ul class="errors">{% for error in sus_form.sus_photos.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                                        {% endif %}
                                         
                                         {%if sus_image_list != None %}
                                             <p><b>Suspect Photos:</b></p>
@@ -163,6 +166,9 @@
                     <h3>Click on the "Choose File" button to upload a file:</h3>
                     {{legi_form.new_photos()}}
                     <br>{{legi_form.submit()}}
+                    {% if legi_form.new_photos.errors %}
+                    <ul class="errors">{% for error in legi_form.new_photos.errors %}<li class="text-danger">{{ error }}</li>{% endfor %}</ul>
+                    {% endif %}
                     <br>
                    
                     <h3>Existing photos</h3>
