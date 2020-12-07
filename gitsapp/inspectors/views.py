@@ -41,8 +41,9 @@ def login_inspector():
         
         inspector = User.query.filter_by(email=form.email.data).first()
 
-        if(inspector.urole == "WORKER"):
+        if(inspector == None or inspector.urole == "WORKER"):
             form.email.errors.append("This is a City Worker account. Use the City Worker login to use this account")
+            return render_template('inspectors/login_inspector.html',form=form)
         
         elif inspector and inspector.check_pwd(form.password.data):
             login_user(inspector)
@@ -56,7 +57,6 @@ def login_inspector():
 @inspectors_users.route('/inspector/dash', methods=['GET'])
 @login_required(role="LAW")
 def dash():
-
     reports = Report.query.all()
     pins = []
 
@@ -109,8 +109,6 @@ def all_reports():
 
 
 @inspectors_users.route('/inspector/legi/<int:report_id>',methods=['GET','POST'])
-@inspectors_users.route('/inspector/legi/<int:report_id>/deletepic/<int:del_pic_id>', methods=['DELETE'])
-@inspectors_users.route('/inspector/legi/<int:report_id>/editpic/<int:edit_pic_id>/<string:new_name>', methods=['POST'])
 @login_required(role="LAW")
 def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
     
@@ -121,19 +119,18 @@ def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
     
     report = Report.query.filter_by(id=report_id).first()
     suspect = None
-
-    print(sus_form.validate_on_submit())
-    print(sus_form.errors)
+    status=None
     #If suspect is already attached
     if len(report.suspect) != 0:
         found = True
         suspect = report.suspect[0]
 
     if search_form.validate_on_submit() and suspect == None:
+        print("Here")
         #Search suspect to autofill
-        if search_form.first_name.data and search_form.last_name.data:
+        if search_form.search_first_name.data and search_form.search_last_name.data:
             for search_suspect in Suspect.query.all():
-                if search_suspect.first_name == search_form.first_name.data and search_suspect.last_name == search_form.last_name.data:
+                if search_suspect.first_name == search_form.search_first_name.data and search_suspect.search_last_name == search_form.search_last_name.data:
                     suspect = search_suspect
                     found = True
                     report.suspect.append(suspect)
@@ -141,17 +138,17 @@ def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
                     break
             
             if suspect == None:
-                suspect = Suspect(search_form.first_name.data, search_form.last_name.data)
+                print("NO SUSPECT")
+                suspect = Suspect(search_form.search_first_name.data, search_form.search_last_name.data)
                 db.session.add(suspect)
                 db.session.commit()
                 report.suspect.append(suspect)
                 db.session.commit()
                 found=False
+                status=404
 
 
     elif sus_form.validate_on_submit():
-        
-
         directory = os.path.join(app.config['STATIC'], 'sus_photos')
         if not os.path.exists(directory):
             os.makedirs(directory)
@@ -223,10 +220,10 @@ def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
                 db.session.commit()
         except:
             return redirect(url_for('inspectors_users.all_reports'))
-
         return redirect(url_for('inspectors_users.all_reports'))
 
-    return render_template('inspectors/LEGI_report.html',report=report, suspect=suspect, sus_form=sus_form, legi_form=legi_form, search_form=search_form, found=found, image_list=report.images, sus_image_list= suspect.images if suspect != None else None)
+    print(legi_form.errors)
+    return render_template('inspectors/LEGI_report.html',report=report, suspect=suspect, sus_form=sus_form, legi_form=legi_form, search_form=search_form, found=found, image_list=report.images, sus_image_list= suspect.images if suspect != None else None), status
 
 @inspectors_users.route('/inspector/graffiti_analysis', methods=['GET','POST'])
 @login_required(role="LAW")
