@@ -88,7 +88,7 @@ class LegiReportForm(FlaskForm):
     cross_street = StringField('Cross Street (If known):', validators=None)
     cleanup = SelectField('Scale of Cleanup (Damage):', choices=['No Change', 'Small', 'Moderate', 'Large'])
     investigation_status = SelectField('Status of Investigation:', choices=['No Change', 'New', 'In Process', 'In litigation', 'Resolved'])
-    new_photos = MultipleFileField('Add Photos:', validators=[files_allowed])
+    new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
     submit = SubmitField('Submit')
 
 class SearchForm(FlaskForm):
@@ -109,7 +109,7 @@ class SuspectForm(FlaskForm):
     last_name = StringField('Suspect Last Name (If Known):', validators=None)
     gang = StringField('Gang Affiliation(If Known):', validators =None)
     status = SelectField('Status of suspect:', choices=['No Change', 'Unknown', 'Identified', 'In Custody', 'Released'])
-    sus_photos = MultipleFileField('Add Photos:', validators=[files_allowed])
+    sus_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
     submit = SubmitField('Create/Update Suspect')
 
 
