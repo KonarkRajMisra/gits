@@ -32,23 +32,23 @@ def login_reporter():
     if current_user.is_authenticated:
         if(current_user.urole == "WORKER"):
             return redirect(url_for('reporters_users.dash'))
-        
 
-        return redirect (url_for('inspectors_users.dash'))
-
+    
     form = LoginForm(request.form)
     if form.validate_on_submit():
-        
+       
         reporter = User.query.filter_by(email=form.email.data).first()
 
-        if(reporter.urole == "WORKER"):
+        if(reporter == None or reporter.urole == "LAW"):
             form.email.errors.append("This is a Law Enforcement account. Use the Law Enforcement  login to use this account")
+            return render_template('Reporters/login_reporter.html',form=form, status=200)
         
         if reporter and reporter.check_pwd(form.password.data):
             login_user(reporter)
             return redirect(url_for('reporters_users.dash'))
 
-    return render_template('Reporters/login_reporter.html',form=form)
+   
+    return render_template('Reporters/login_reporter.html',form=form, status=200)
 
 
 #after login users should be directed to DASH
@@ -62,8 +62,9 @@ def dash():
 @login_required(role="WORKER")
 def ccie_report():
     form = CCIEReportForm()
+    print(form.photos.data)
     #if form submitted create a report
-    if form.validate_on_submit():
+    if form.validate_on_submit():  
         #Save images
         img_list=[]
         directory = os.path.join(app.config['STATIC'], 'report_photos')
@@ -74,7 +75,7 @@ def ccie_report():
         result = gmap.geocode(form.street_address.data)
         #basic check to make sure address matches state
         if(result == None or result[0].get("address_components")[5].get("long_name") != form.state.data):
-            form.state.errors.append('Invalid state')
+            form.street_address.errors.append('Address does not match the state provided. Ensure the address entered has no abbreviations (Ex. Drive not Dr. )')
             return render_template('Reporters/CCIE_report.html', form=form)
 
         
@@ -114,6 +115,7 @@ def ccie_report():
         db.session.commit()
         return redirect(url_for('reporters_users.dash'))
 
+    print(form.errors)
     #otherwise show the form
     return render_template('Reporters/CCIE_report.html',form=form)
 
