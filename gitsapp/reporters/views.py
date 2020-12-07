@@ -12,6 +12,7 @@ from gitsapp import gmap
 reporters_users = Blueprint('reporters_users',__name__)
 
 #create reporter acc
+
 @reporters_users.route('/register_reporter',methods=['GET','POST'])
 def register_reporter():
     form = RegistrationForm(request.form)
@@ -98,14 +99,16 @@ def ccie_report():
         db.session.add(report)
         db.session.commit()
 
+        
         for image in form.photos.data:
-            filename=secure_filename(image.filename)   
-            file_path = os.path.join(directory, filename)
-            image.save(file_path)
-            rep_image = Report_Image(file_path, report.id, filename)
-            db.session.add(rep_image)
-            db.session.commit()
-            img_list.append(rep_image)
+            if image:
+                filename=secure_filename(image.filename)   
+                file_path = os.path.join(directory, filename)
+                image.save(file_path)
+                rep_image = Report_Image(file_path, report.id, filename)
+                db.session.add(rep_image)
+                db.session.commit()
+                img_list.append(rep_image)
 
         report.images = img_list
         db.session.commit()

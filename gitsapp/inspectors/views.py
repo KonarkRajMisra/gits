@@ -1,6 +1,6 @@
 import os
 from gitsapp.models import User,Report, Suspect, Suspect_Image, Report_Image
-from gitsapp.inspectors.forms import RegistrationForm,LoginForm, LegiReportForm, SuspectForm, SearchSuspectForm
+from gitsapp.inspectors.forms import RegistrationForm,LoginForm, LegiReportForm, SuspectForm, SearchSuspectForm, SearchForm, GraffitiAnalysisForm
 from gitsapp import db, login_required, app, gmap
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,8 +8,11 @@ from flask_login import login_user, current_user, logout_user
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_googlemaps import Map
 from collections import Counter
+from datetime import date
 #inspector flow
 inspectors_users = Blueprint('inspectors_users', __name__)
+
+
 
 #create inspector acc
 @inspectors_users.route('/register_inspector',methods=['GET','POST'])
@@ -95,38 +98,7 @@ def toggle_hotspot(report_id):
 def signout_inspector():
     logout_user()
     return redirect(url_for('core.index'))
-
-#query all the reports created by the user, else give 403 unauth access
-# @inspectors_users.route('/reports',methods=['GET','POST'])
-# @login_required(role="LAW")
-# def reports(report_id):
-#     all_reports = Report.query.get_or_404(report_id)
-#     if all_reports.author != current_user:
-#         abort(403)
-            
-
-@inspectors_users.route('/inspector/gr/', methods=['GET'])
-@inspectors_users.route('/inspector/gr/<string:data>', methods=['GET'])
-@login_required(role="LAW")
-def graffiti_reporting(data=None):
-
-    urls = []
-    reports = []
-
-    if data != None:
         
-        for report in Report.query.all():
-            if report.has_keyword(data):
-                urls.append(url_for('inspectors_users.legi_report',report_id=report.id))
-                reports.append(report)
-
-
-
-    return render_template('inspectors/graffiti_reporting.html',report_links=urls, report_objs=reports)        
-
-
-
-
 
          
 @inspectors_users.route('/inspector/all_reports',methods=['GET'])
@@ -174,6 +146,7 @@ def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
                 db.session.commit()
                 found=False
                 status=404
+
 
     elif sus_form.validate_on_submit():
         directory = os.path.join(app.config['STATIC'], 'sus_photos')
@@ -252,48 +225,75 @@ def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
     print(legi_form.errors)
     return render_template('inspectors/LEGI_report.html',report=report, suspect=suspect, sus_form=sus_form, legi_form=legi_form, search_form=search_form, found=found, image_list=report.images, sus_image_list= suspect.images if suspect != None else None), status
 
-@inspectors_users.route('/inspector/graffiti_analysis', methods=['GET'])
+@inspectors_users.route('/inspector/graffiti_analysis', methods=['GET','POST'])
 @login_required(role="LAW")
 def graffiti_analysis():
 
+    form = GraffitiAnalysisForm()
+    pins = []
+
+    if form.validate_on_submit():
+        reports = Report.query.all()
+        for report in reports:
+            
+            if form.start_date.data == str(report.date_of_incident).split(" ")[0] or form.end_date.data == str(report.date_of_incident).split(" ")[0] or form.start_gps_lat.data == report.gps_lat or form.start_gps_lng.data == report.gps_lng or form.end_gps_lng.data == report.gps_lat or form.end_gps_lat.data == report.gps_lat or form.suspect_name.data == report.first_name + report.last_name:
+                pin_info = {
+                    'icon': 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+                    "lat": report.gps_lat,
+                    "lng": report.gps_lng,
+                    "infobox": 
+                    '<a href="' + url_for('inspectors_users.legi_report', report_id=report.id) + '">LEGI Report</a> <form method="POST" id="hotspot"><a href="' + url_for('inspectors_users.toggle_hotspot', report_id = report.id) + '"' + "onclick=\"document.getElementById('hotspot').submit();\">Remove hotspot</a></form>"
+                }
+                pins.append(pin_info)
+                print(pins)
+
+    report_map = Map(identifier="reports_map", lat=39.8283, lng=-98.5795,marker=pins )
+
+    return render_template('inspectors/graffitianalysis.html',form=form,pins=pins)
+
+
+
+
+@inspectors_users.route('/inspector/gr/', methods=['GET','POST'])
+@login_required(role="LAW")
+def graffiti_reporting(data=None):
+
+    form = SearchForm()
+    urls = []
+    reports = []
+
+    if form.validate_on_submit():
+
+        for report in Report.query.all():
+            print(form.search.data)
+            if report.has_keyword(form.search.data):
+                urls.append(url_for('inspectors_users.legi_report',report_id=report.id))
+                reports.append(report)
+
+    
+    return render_template('inspectors/graffiti_reporting.html',links=urls, reports=reports,form=form)
+
+@inspectors_users.route('/inspector/status_report')
+@login_required(role="LAW")
+def status_report():
     reports = Report.query.order_by(Report.id).all()
-    date_frequency = Counter()
-    zip_frequency = Counter()
-    gps_range = Counter()
-    suspect_names = Counter()
-    crew_ids = Counter()
+    law_enforcers = User.query.filter_by(urole="LAW")
+    new_incident = 0
+    if law_enforcers:
+        total_law = []
+        for officer in law_enforcers:
+            total_law.append(officer)
+    total_law = len(total_law)
+    total_incidents = len(reports)
+    today = date.today()
+    reports = Report.query.all()
+    suspects = Suspect.query.all()
+    incidents_with_no_suspects = len(reports) - len(suspects)
+    incidents_with_identified_suspects = Suspect.query.filter_by(status="Identified").count()
+    incidents_with_suspects_in_custody = Suspect.query.filter_by(status="In Custody").count()
+    incidents_with_suspects_released = Suspect.query.filter_by(status="Released").count()
+    incidents_resolved = Report.query.filter_by(investigation_status="Resolved").count()
+    
 
-    for report in reports:
 
-        if str(report.date_of_incident).split(" ")[0] in date_frequency:
-            date_frequency[str(report.date_of_incident).split(" ")[0]] += 1
-        elif str(report.date_of_incident).split(" ")[0] not in date_frequency:
-            date_frequency[str(report.date_of_incident).split(" ")[0]] = 1
-        
-        if report.zipcode in zip_frequency:
-            zip_frequency[report.zipcode] += 1
-
-        elif report.zipcode not in zip_frequency:
-            zip_frequency[report.zipcode] = 1
-
-
-        lat = (report.gps_lat, report.gps_lng)
-
-        if lat in gps_range:
-            gps_range[lat] += 1
-        elif lat not in gps_range:
-            gps_range[lat] = 1
-
-        suspect_name = (report.first_name + report.last_name).upper()
-        if suspect_name in suspect_names:
-            suspect_names[suspect_name] += 1
-        elif suspect_name not in suspect_names:
-            suspect_names[suspect_name] = 1
-
-        if report.crew_id in crew_ids:
-            crew_ids[report.crew_id] += 1
-        elif report.crew_id not in crew_ids:
-            crew_ids[report.crew_id] = 1
-
-        
-    return render_template('inspectors/graffitianalysis.html',reports=reports, date_frequency= date_frequency, zip_frequency = zip_frequency,gps_range = gps_range,suspect_names = suspect_names,crew_ids = crew_ids)
+    return render_template('inspectors/status_report.html',today=today,total_law=total_law, new_incident=new_incident, total_incidents=total_incidents,incidents_with_no_suspects=incidents_with_no_suspects,incidents_with_identified_suspects=incidents_with_identified_suspects,incidents_with_suspects_in_custody =incidents_with_suspects_in_custody ,incidents_with_suspects_released=incidents_with_suspects_released,incidents_resolved=incidents_resolved)
