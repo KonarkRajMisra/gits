@@ -52,9 +52,10 @@ class LegiReportForm(FlaskForm):
     street_address = StringField('Address (No abbreviations):',validators=[DataRequired()])
     zipcode = IntegerField('Zipcode:',validators=[DataRequired()])
     cross_street = StringField('Cross Street (If known):', validators=None)
-    #TODO: gps_coordinates
-    #TODO: images
-    submit = SubmitField('Edit Report')
+    cleanup = SelectField('Scale of Cleanup (Damage):', choices=['No Change', 'Small', 'Moderate', 'Large'])
+    investigation_status = SelectField('Status of Investigation:', choices=['No Change', 'New', 'In Process', 'In litigation', 'Resolved'])
+    new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
+    submit = SubmitField('Submit')
 
 class SearchForm(FlaskForm):
     search = StringField('search', [DataRequired()])

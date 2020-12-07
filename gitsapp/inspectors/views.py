@@ -1,6 +1,6 @@
 import os
 from gitsapp.models import User,Report, Suspect, Suspect_Image, Report_Image
-from gitsapp.inspectors.forms import RegistrationForm,LoginForm, LegiReportForm, SuspectForm, SearchSuspectForm
+from gitsapp.inspectors.forms import RegistrationForm,LoginForm, LegiReportForm, SuspectForm, SearchSuspectForm, SearchForm
 from gitsapp import db, login_required, app, gmap
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -11,6 +11,8 @@ from collections import Counter
 from datetime import date
 #inspector flow
 inspectors_users = Blueprint('inspectors_users', __name__)
+
+
 
 #create inspector acc
 @inspectors_users.route('/register_inspector',methods=['GET','POST'])
@@ -120,6 +122,8 @@ def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
     report = Report.query.filter_by(id=report_id).first()
     suspect = None
 
+    print(sus_form.validate_on_submit())
+    print(sus_form.errors)
     #If suspect is already attached
     if len(report.suspect) != 0:
         found = True
@@ -144,32 +148,8 @@ def legi_report(report_id, new_name=None, del_pic_id=None, edit_pic_id=None):
                 db.session.commit()
                 found=False
 
+
     elif sus_form.validate_on_submit():
-        # if(suspect == None):
-            # suspect = Suspect(sus_form.first_name.data, sus_form.last_name.data, sus_form.gang.data, sus_form.status.data if sus_form.status.data != "No Change" else "Unknown")
-
-            # report.suspect = [suspect]
-
-
-                
-            # db.session.add(suspect)
-            # db.session.commit()
-            # found=True
-            # img_list=[]
-
-            # try:
-            #     for image in sus_form.sus_photos.data:
-            #         filename=secure_filename(image.filename)
-            #         file_path = os.path.join(directory, filename)
-            #         image.save(file_path)
-            #         sus_image = Suspect_Image(file_path, suspect.id, filename)
-            #         db.session.add(sus_image)
-            #         db.session.commit()
-            #         suspect.images.append(sus_image)
-            #         db.session.commit()
-            
-            # except:
-            #     pass
         
 
         directory = os.path.join(app.config['STATIC'], 'sus_photos')
@@ -298,23 +278,22 @@ def graffiti_analysis():
 
 
 @inspectors_users.route('/inspector/gr/', methods=['GET','POST'])
-#@inspectors_users.route('/inspector/gr/<string:data>', methods=['GET','POST'])
 @login_required(role="LAW")
 def graffiti_reporting(data=None):
 
     form = SearchForm()
-
     urls = []
     reports = []
 
     if form.validate_on_submit():
 
         for report in Report.query.all():
+            print(form.search.data)
             if report.has_keyword(form.search.data):
                 urls.append(url_for('inspectors_users.legi_report',report_id=report.id))
                 reports.append(report)
 
-    print(urls,reports)
+    
     return render_template('inspectors/graffiti_reporting.html',links=urls, reports=reports,form=form)
 
 @inspectors_users.route('/inspector/status_report')
@@ -322,7 +301,14 @@ def graffiti_reporting(data=None):
 def status_report():
     reports = Report.query.order_by(Report.id).all()
     law_enforcers = User.query.filter_by(urole="LAW")
-    total_law = len(law_enforcers)
+    new_incident = 0
+    if law_enforcers:
+        total_law = []
+        for officer in law_enforcers:
+            total_law.append(officer)
+    total_law = len(total_law)
     total_incidents = len(reports)
     today = date.today()
-    return render_template('inspectors/status_report.html',today=today,total_incidents=total_incidents,total_law_enforcements=total_law)
+    
+
+    return render_template('inspectors/status_report.html',today=today,total_incidents=total_incidents,total_law=total_law, new_incident=new_incident)
