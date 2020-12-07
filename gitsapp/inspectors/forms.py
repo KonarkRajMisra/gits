@@ -86,8 +86,9 @@ class GraffitiAnalysisForm(FlaskForm):
     start_gps_lng = StringField('Starting GPS Longitude Coordinates', validators=None)
     end_gps_lat = StringField('Ending GPS Latitude Coordinates', validators=None)
     end_gps_lng = StringField('Ending GPS Longitude Coordinates', validators=None)
-    suspect_name = StringField('Suspect Name', validators=None)
-    gang_name = StringField('Gang Name', validators=None)
+    suspect_fname = StringField('Suspect First Name', validators=None)
+    suspect_lname = StringField('Suspect Last Name', validators=None)
+    gang_name = StringField('Gang/Crew Name', validators=None)
     calculate = SubmitField('Calculate')
 
 
