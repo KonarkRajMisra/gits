@@ -115,6 +115,6 @@ class GraffitiAnalysisForm(FlaskForm):
     suspect_fname = StringField('Suspect First Name', validators=None)
     suspect_lname = StringField('Suspect Last Name', validators=None)
     gang_name = StringField('Gang/Crew Name', validators=None)
-    calculate = SubmitField('Calculate')
+    search = SubmitField('Search')
 
 
