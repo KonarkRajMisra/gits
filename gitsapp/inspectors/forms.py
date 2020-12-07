@@ -83,6 +83,14 @@ class LegiReportForm(FlaskForm):
     new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
     submit = SubmitField('Submit')
 
+class SearchForm(FlaskForm):
+    search = StringField('search', [DataRequired()])
+    submit = SubmitField('Search Report')
+    cleanup = SelectField('Scale of Cleanup (Damage):', choices=['No Change', 'Small', 'Moderate', 'Large'])
+    investigation_status = SelectField('Status of Investigation:', choices=['No Change', 'New', 'In Process', 'In litigation', 'Resolved'])
+    new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
+    submit = SubmitField('Submit')
+
 class SearchSuspectForm(FlaskForm):
     first_name = StringField('Suspect First Name (If Known):', validators=None)
     last_name = StringField('Suspect Last Name (If Known):', validators=None)
@@ -95,4 +103,17 @@ class SuspectForm(FlaskForm):
     status = SelectField('Status of suspect:', choices=['No Change', 'Unknown', 'Identified', 'In Custody', 'Released'])
     sus_photos = MultipleFileField('Add Photos:', validators=[files_allowed])
     submit = SubmitField('Create/Update Suspect')
+
+
+class GraffitiAnalysisForm(FlaskForm):
+    start_date = StringField('Start Date', validators=[DataRequired()])
+    end_date = StringField('End Date', validators=[DataRequired()])
+    start_gps_lat = StringField('Starting Date GPS Latitude Coordinates', validators=None)
+    start_gps_lng = StringField('Starting Date GPS Latitude Coordinates', validators=None)
+    end_gps_lat = StringField('Ending Date GPS Latitude Coordinates', validators=None)
+    end_gps_lng = StringField('Ending Date GPS Longitude Coordinates', validators=None)
+    suspect_name = StringField('Suspect Name', validators=None)
+    gang_name = StringField('Gang Name', validators=None)
+    calculate = SubmitField('Calculate')
+
 

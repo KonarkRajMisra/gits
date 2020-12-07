@@ -49,6 +49,13 @@
 
   <a
     class="btn btn-outline-primary"
+    href="{{url_for('inspectors_users.graffiti_analysis')}}"
+  >
+    Graffiti Analysis
+  </a>
+
+  <a
+    class="btn btn-outline-primary"
     href="{{url_for('inspectors_users.signout_inspector')}}"
   >
     Sign out
@@ -56,9 +63,9 @@
 
   <a
     class="btn btn-outline-primary"
-    href="{{url_for('inspectors_users.graffiti_analysis')}}"
+    href="{{url_for('inspectors_users.graffiti_reporting')}}"
   >
-    Graffiti Analysis
+    Graffiti Reporting
   </a>
   {{googlemap("reports_map", lat=39.8283, lng=-98.5795, markers=pins, zoom=2)}}
 </div>
