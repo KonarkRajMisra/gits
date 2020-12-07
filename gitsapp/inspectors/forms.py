@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField,PasswordField,SubmitField,SelectField,IntegerField, MultipleFileField
 from flask_wtf.file import FileAllowed
-from wtforms.validators import DataRequired,Email,EqualTo
-from wtforms import StringField,PasswordField,SubmitField,SelectField
+from wtforms.validators import DataRequired,Email,EqualTo,Optional
+from wtforms import StringField,PasswordField,SubmitField,SelectField,FloatField
 from wtforms.validators import DataRequired,Email,EqualTo, Length, NumberRange
 from wtforms import ValidationError
 from gitsapp.reporters.forms import building_choices
@@ -32,6 +32,13 @@ suspect_status = [
 ]
 
 allowed_exts = ['.jpg', '.png', '.jpeg']
+
+def files_allowed(form,field):
+    for file in field.data:
+        file_name, extension = os.path.splitext(file.filename)
+
+        if extension.lower() not in allowed_exts:
+            raise ValidationError('File not allowed. Images only!')
 
 def files_allowed(form,field):
     for file in field.data:
@@ -81,7 +88,7 @@ class LegiReportForm(FlaskForm):
     cross_street = StringField('Cross Street (If known):', validators=None)
     cleanup = SelectField('Scale of Cleanup (Damage):', choices=['No Change', 'Small', 'Moderate', 'Large'])
     investigation_status = SelectField('Status of Investigation:', choices=['No Change', 'New', 'In Process', 'In litigation', 'Resolved'])
-    new_photos = MultipleFileField('Add Photos:', validators=[FileAllowed(['jpg', 'png', 'PNG'], 'Images only!')])
+    new_photos = MultipleFileField('Add Photos:', validators=[files_allowed])
     submit = SubmitField('Submit')
 
 class SearchForm(FlaskForm):
