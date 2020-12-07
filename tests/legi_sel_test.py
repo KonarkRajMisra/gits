@@ -9,6 +9,7 @@ from gitsapp.models import Report
 driver = webdriver.Chrome()
 driver.get('http://127.0.0.1:5000')
 
+#Sign in as existing investigator
 driver.find_element_by_xpath('/html/body/div[1]/div/div/aside[2]/div/article/form/div/div[2]/a').click()
 driver.find_element_by_xpath('//*[@id="email"]').send_keys('lfdeleon98@gmail.com')
 driver.find_element_by_xpath('//*[@id="password"]').send_keys('123456')
