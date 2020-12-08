@@ -242,7 +242,7 @@ def graffiti_analysis():
             input_start_gps_lng = round(form.start_gps_lng.data) if form.start_gps_lng.data else 0
             input_end_gps_lat = round(form.end_gps_lat.data) if form.end_gps_lat.data else 0
             input_end_gps_lng = round(form.end_gps_lng.data) if form.end_gps_lng.data else 0
-
+            pin_info = {}
             if form.start_date.data == str(report.date_of_incident).split(" ")[0] or form.end_date.data == str(report.date_of_incident).split(" ")[0]:
                 
                 #or round(form.start_gps_lat.data) == round(float(report.gps_lat)) or round(form.start_gps_lng.data) == round(float(report.gps_lng)) or round(form.end_gps_lng.data) == round(float(report.gps_lat)) or round(form.end_gps_lat.data) == round(float(report.gps_lat)) or form.suspect_name.data == report.first_name + report.last_name
@@ -281,7 +281,6 @@ def graffiti_reporting(data=None):
     form = SearchForm()
     urls = []
     reports = []
-
     if form.validate_on_submit():
 
         for report in Report.query.all():
