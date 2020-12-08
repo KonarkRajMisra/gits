@@ -47,7 +47,7 @@
   </button>
   <div class="container">
     <div class="box">
-      <h2 class="text-center">Frequency of Graffiti Incidents</h2>
+      <h2 class="text-center">Graffiti Incident Search Criteria</h2>
         <form method="POST">
           <div class="row">
             {{form.hidden_tag()}}
@@ -55,7 +55,7 @@
               {{form.start_date.label}} {{form.start_date(type="date")}} <br>
               {{form.start_gps_lat.label}} {{form.start_gps_lat(placeholder="32.71")}}<br>
               {{form.start_gps_lng.label}} {{form.start_gps_lng(placeholder="117.16")}}<br>
-              {{form.suspect_name.label}} {{form.suspect_name(placeholder="Steve")}}<br>
+              {{form.gang_name.label}} {{form.gang_name(placeholder="The Bad Guys")}}<br>
               {{form.gang_name.label}} {{form.gang_name(placeholder="The Bad Guys")}}<br>
             </div>
             <p></p>
@@ -66,7 +66,7 @@
               
               
             </div>
-            {{form.calculate()}}
+            {{form.search()}}
           </div> <!-- end of row  -->
         </form>
           
@@ -74,7 +74,7 @@
       
     </div> <!-- end of box  -->
   </div> <!-- end of container  -->
-  <div class="jumbotron">
+  <div clFass="jumbotron">
     {{googlemap("reports_map", lat=39.8283, lng=-98.5795, markers=pins, zoom=2)}}
   </div>
 </body>
