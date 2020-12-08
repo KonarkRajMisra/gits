@@ -9,4 +9,4 @@ gitsapp/static/sus_photos
 .coverage
 *.log
 .coverage
-
+htmlcov
