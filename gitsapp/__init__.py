@@ -1,5 +1,4 @@
 #configuration files
-#configuration files
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -15,8 +14,8 @@ app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 #Configurations
-app.config['SECRET_KEY'] = 'mysecretkey'
-app.config['GOOGLEMAPS_KEY'] = "AIzaSyD7IJ8NOPPuyGymr2fStLpV-TJfda1JRsY"
+app.config['SECRET_KEY'] = os.gentenv('SECRET_KEY')
+app.config['GOOGLEMAPS_KEY'] = os.getenv('GOOGLEMAPS_KEY')
 app.config['STATIC'] = os.path.join(app.root_path, 'static')
 
 GoogleMaps(app)

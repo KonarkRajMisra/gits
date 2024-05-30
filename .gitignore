@@ -10,3 +10,4 @@ gitsapp/static/sus_photos
 *.log
 .coverage
 htmlcov
+venv
